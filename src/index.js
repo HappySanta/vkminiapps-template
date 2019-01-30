@@ -1,6 +1,6 @@
 import React from 'react'
 import mount from "./tools/mount"
-import VkSdk from "./Vk/VkSdk"
+import VkSdk from "@happysanta/vk-apps-sdk"
 import store, {history} from './store'
 import {Provider} from "react-redux"
 import MobileContainer from "./containers/MobileContainer/MobileContainer"
