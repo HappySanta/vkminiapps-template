@@ -3,9 +3,7 @@ import {connect} from 'react-redux'
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import L from "../../lang/L"
 import {
-	PAGE_ENTITY, PAGE_NEW, PAGE_NOT_FOUND, PANEL_ENTITY, PANEL_MAIN, PANEL_NEW,
-	popPage, pushPage, ROOT_MAIN, Route,
-	VIEW_MAIN,
+	popPage, pushPage,
 } from "../../modules/PageModule"
 import {withRouter} from "react-router"
 import Error from "../../components/Error/Error"
@@ -14,6 +12,13 @@ import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back'
 import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from '@vkontakte/vkui'
 import '@vkontakte/vkui/dist/vkui.css'
 import ScreenSpinner from "../../components/ScreenSpinner/ScreenSpinner"
+import {Route} from "../../routing/Route"
+import {
+	PAGE_ENTITY,
+	PANEL_ENTITY,
+	PANEL_MAIN, VIEW_ENTITY,
+	VIEW_MAIN
+} from "../../routing/routes"
 
 const osName = platform()
 
@@ -138,42 +143,27 @@ class MobileContainer extends Component {
 			</div>
 		}
 		let route = Route.fromLocation(this.props.location.pathname)
-		if (route.pageId === PAGE_NOT_FOUND) {
-			return <div>
-				Страница не найдена
-			</div>
-		}
-		return <Root id={ROOT_MAIN} activeView={route.getViewId()}>
+		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
 				  onSwipeBack={() => this.goBack()}
 				  history={this.getMainPanelHistory()}
 				  activePanel={route.getPanelId()}>
 				<Panel id={PANEL_MAIN}>
-                    <PanelHeader>
-                        Главная страница
-                    </PanelHeader>
+					<PanelHeader>
+						Главная страница
+					</PanelHeader>
 					<div>
-						Главный контент
-					</div>
-					<div>
-						<Button onClick={() => this.props.pushPage(PAGE_ENTITY, {entityId: 5})}>
-							На вторую страницу
-						</Button>
-						<Button onClick={() => this.props.pushPage(PAGE_NEW)}>
-							На новую страницу
+						<Button onClick={() => this.props.pushPage(PAGE_ENTITY, {entityId: 0})}>
+							На страницу сущности
 						</Button>
 					</div>
 				</Panel>
+			</View>
+			<View id={VIEW_ENTITY} activePanel={route.getPanelId()}>
 				<Panel id={PANEL_ENTITY}>
-					{this.renderBackPanelHeader('Вторая')}
+					{this.renderBackPanelHeader('Сущность')}
 					<div>
-                        Вторая страница
-					</div>
-				</Panel>
-				<Panel id={PANEL_NEW}>
-					{this.renderBackPanelHeader('NEW')}
-					<div>
-						NEW
+						Страница с какой-либо сущностью
 					</div>
 				</Panel>
 			</View>
