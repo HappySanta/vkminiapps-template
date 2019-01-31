@@ -3,10 +3,9 @@ import {connect} from 'react-redux'
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import L from "../../lang/L"
 import {
-    getPathByPanelId,
-    getRouteByPath, PAGE_MAIN, PAGE_NEXT,
-    popPage, pushPage,
-    VIEW_MAIN,
+	PAGE_ENTITY, PAGE_NEW, PAGE_NOT_FOUND, PANEL_ENTITY, PANEL_MAIN, PANEL_NEW,
+	popPage, pushPage, ROOT_MAIN, Route,
+	VIEW_MAIN,
 } from "../../modules/PageModule"
 import {withRouter} from "react-router"
 import Error from "../../components/Error/Error"
@@ -114,8 +113,7 @@ class MobileContainer extends Component {
 	}
 
 	getMainPanelHistory() {
-        let route = getRouteByPath(this.props.location.pathname)
-        return route.panelId === PAGE_MAIN ? [PAGE_MAIN] : [PAGE_MAIN, PAGE_NEXT]
+        return []
 	}
 
 	render() {
@@ -139,13 +137,18 @@ class MobileContainer extends Component {
 				</div>
 			</div>
 		}
-		let route = getRouteByPath(this.props.location.pathname)
-		return <Root activeView={route.getView()}>
+		let route = Route.fromLocation(this.props.location.pathname)
+		if (route.pageId === PAGE_NOT_FOUND) {
+			return <div>
+				Страница не найдена
+			</div>
+		}
+		return <Root id={ROOT_MAIN} activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
 				  onSwipeBack={() => this.goBack()}
 				  history={this.getMainPanelHistory()}
-				  activePanel={route.panelId}>
-				<Panel id={PAGE_MAIN}>
+				  activePanel={route.getPanelId()}>
+				<Panel id={PANEL_MAIN}>
                     <PanelHeader>
                         Главная страница
                     </PanelHeader>
@@ -153,15 +156,24 @@ class MobileContainer extends Component {
 						Главный контент
 					</div>
 					<div>
-						<Button onClick={() => this.props.pushPage(getPathByPanelId(PAGE_NEXT))}>
+						<Button onClick={() => this.props.pushPage(PAGE_ENTITY, {entityId: 5})}>
 							На вторую страницу
+						</Button>
+						<Button onClick={() => this.props.pushPage(PAGE_NEW)}>
+							На новую страницу
 						</Button>
 					</div>
 				</Panel>
-				<Panel id={PAGE_NEXT}>
+				<Panel id={PANEL_ENTITY}>
 					{this.renderBackPanelHeader('Вторая')}
 					<div>
                         Вторая страница
+					</div>
+				</Panel>
+				<Panel id={PANEL_NEW}>
+					{this.renderBackPanelHeader('NEW')}
+					<div>
+						NEW
 					</div>
 				</Panel>
 			</View>
