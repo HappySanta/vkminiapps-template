@@ -10,6 +10,7 @@ export class Route {
 	structure
 	location
 	pageId
+	params
 
 	static fromLocation(location) {
 		let route = new Route()
@@ -22,6 +23,7 @@ export class Route {
 		if (!match || (match && !match.isExact)) {
 			return route
 		}
+		route.params = match.params
 		route.pageId = match.path
 		route.structure = routes[route.pageId]
 		return route
@@ -32,6 +34,7 @@ export class Route {
 		route.location = generatePath(pageId, params)
 		route.pageId = pageId
 		route.structure = routes[pageId]
+		route.params = params
 		return route
 	}
 
@@ -69,5 +72,9 @@ export class Route {
 
 	isPopup() {
 		return this.structure.isPopup
+	}
+	
+	getParams() {
+		return this.params
 	}
 }
