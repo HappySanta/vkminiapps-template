@@ -2,7 +2,6 @@ import React, {Component} from "react"
 import {connect} from "react-redux"
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import L from "../../lang/L"
-import {handleLocation} from "../../modules/LocationModule"
 import Error from "../../components/Error/Error"
 import Icon24Back from "@vkontakte/icons/dist/24/back"
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
@@ -10,7 +9,15 @@ import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} fro
 import "@vkontakte/vkui/dist/vkui.css"
 import ScreenSpinner from "../../components/ScreenSpinner/ScreenSpinner"
 import {Route} from "../../routing/Route"
-import {PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_ENTITY, VIEW_MAIN} from "../../routing/routes"
+import {
+	PAGE_ENTITY, PAGE_ENTITY_NEXT,
+	PAGE_NEXT,
+	PAGE_POPUP,
+	PANEL_ENTITY, PANEL_ENTITY_NEXT,
+	PANEL_MAIN, PANEL_NEXT,
+	VIEW_ENTITY,
+	VIEW_MAIN
+} from "../../routing/routes"
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
 import {setBootstrap} from "../../modules/BootstrapModule"
 import {popPage, pushPage} from "../../index"
@@ -125,10 +132,11 @@ class MobileContainer extends Component {
 	}
 
 	render() {
-		if (!this.props.loaded) {
+		let {loaded, fatal, location, viewHistory} = this.props
+		if (!loaded) {
 			return <ScreenSpinner h={MobileContainer.deviceHeight + this.getPanelHeight()}/>
 		}
-		if (this.props.fatal) {
+		if (fatal) {
 			return <Error error={this.props.fatal} onClose={() => this.props.removeFatalError()}/>
 		}
 		if ((this.getAndroidVersion() && this.getAndroidVersion() <= 4) || (this.getIosVersion() && this.getIosVersion() <= 8)) {
@@ -145,11 +153,12 @@ class MobileContainer extends Component {
 				</div>
 			</div>
 		}
-
-		let route = Route.fromLocation(this.props.location.pathname)
+		let route = Route.fromLocation(location.pathname)
 		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
-				  activePanel={route.getPanelId()}>
+				  activePanel={route.getPanelId()}
+				  history={viewHistory[VIEW_MAIN]}
+				  onSwipeBack={() => popPage()}>
 				<Panel id={PANEL_MAIN}>
 					<PanelHeader>
 						Главная страница
@@ -159,14 +168,30 @@ class MobileContainer extends Component {
 							На страницу сущности
 						</Button>
 					</div>
+					<div>
+						<Button onClick={() => pushPage(PAGE_NEXT)}>
+							Следующая страница
+						</Button>
+					</div>
+				</Panel>
+				<Panel id={PANEL_NEXT}>
+					{this.renderBackPanelHeader('Следующая страница')}
 				</Panel>
 			</View>
-			<View id={VIEW_ENTITY} popout={this.renderPopup(route)} activePanel={route.getPanelId()}>
+			<View history={viewHistory[VIEW_ENTITY]} id={VIEW_ENTITY} popout={this.renderPopup(route)} activePanel={route.getPanelId()}>
 				<Panel id={PANEL_ENTITY}>
 					{this.renderBackPanelHeader('Сущность')}
 					<div>
 						Страница с какой-либо сущностью
 					</div>
+					<div>
+						<Button onClick={() => pushPage(PAGE_ENTITY_NEXT, {entityId: 0})}>
+							На след. страницу сущности
+						</Button>
+					</div>
+				</Panel>
+				<Panel id={PANEL_ENTITY_NEXT}>
+					{this.renderBackPanelHeader('Следующая страница сущности')}
 					<div>
 						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0, myId: 0})}>
 							Открыть попап
@@ -182,6 +207,7 @@ function mapStateToProps(state) {
 	return {
 		fatal: state.FatalErrorModule,
 		loaded: state.BootstrapModule.loaded,
+		viewHistory: state.LocationModule.viewHistory,
 	}
 }
 
@@ -190,5 +216,4 @@ export default connect(mapStateToProps, {
 	popPage,
 	pushPage,
 	setBootstrap,
-	handleLocation,
 })(MobileContainer)

@@ -69,3 +69,11 @@ export function nToBr(string, cfg = {}) {
     }
     return result
 }
+
+export function pushStoreItem() {
+	
+}
+
+export function popStoreItem() {
+	
+}

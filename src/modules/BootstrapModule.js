@@ -17,6 +17,10 @@ export function setBootstrap(update) {
 	return {type: SET_BOOTSTRAP, update}
 }
 
+export function setLoaded(loaded) {
+	return setBootstrap({loaded})
+}
+
 export function bootstrap(onSuccess) {
 	return (dispatch, getState) => {
 		let {loaded} = getState().BootstrapModule

@@ -12,7 +12,7 @@ import registerServiceWorker from "./registerServiceWorker"
 import * as VkConnect from "@vkontakte/vkui-connect/index"
 import {ConfigProvider} from "@vkontakte/vkui"
 import {Router, Route, generatePath} from "react-router-dom"
-import {handleLocation} from "./modules/LocationModule"
+import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
 import {isDevEnv} from "./tools/helpers"
 
 VkConnect.send("VKWebAppInit", {})
@@ -29,9 +29,9 @@ export function popPage() {
 	history.goBack()
 }
 
-export function replacePage(pageId, params, search = '') {
+export function replacePage(pageId, params = {}, search = '') {
 	history.replace({
-		pathname: generatePath(pageId, params = {}),
+		pathname: generatePath(pageId, params),
 		state: params,
 		search: search,
 	})
@@ -45,7 +45,7 @@ L.init(startParams.getLangCode()).then(() => {
 	history.listen((location, action) => {
 		store.dispatch(handleLocation(location.pathname, action))
 	})
-	store.dispatch(handleLocation(history.location.pathname))
+	store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH))
 	handleLocation(history.location.pathname)
 	mount(<Provider store={store}>
 		<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
