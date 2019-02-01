@@ -1,0 +1,41 @@
+.BottomPopup {
+	$borderRadius: 14px;
+	margin: 0 auto;
+	position: relative;
+	z-index: 2000;
+	border-radius: $borderRadius $borderRadius 0 0;
+	background-color: transparent;
+	width: 100%;
+	box-sizing: border-box;
+
+	&__header {
+		border-radius: $borderRadius $borderRadius 0 0;
+		background: #EBEFF4;
+		font-size: 17px;
+		color: #222222;
+		font-weight: 500;
+	}
+
+	&__buttons {
+		display: block;
+	}
+
+	&__footer {
+		padding: 20px 16px 20px 16px;
+
+		& > .Button {
+			width: 100%;
+			box-sizing: border-box;
+		}
+	}
+
+	&__close {
+		position: absolute;
+		z-index: 1;
+		top: 14px;
+		right: 14px;
+		background: url("./img/close.svg") no-repeat center center/cover;
+		width: 24px;
+		height: 24px;
+	}
+}

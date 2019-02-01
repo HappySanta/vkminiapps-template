@@ -10,8 +10,10 @@ export const PANEL_ENTITY = 'panel_entity'
 
 export const PAGE_MAIN = '/'
 export const PAGE_ENTITY = '/:entityId([0-9]+)'
+export const PAGE_POPUP = '/:entityId([0-9]+)/:myId([0-9]+)'
 
 export default {
 	[PAGE_MAIN]: new PageStructureVkUi(),
 	[PAGE_ENTITY]: new PageStructureVkUi(PANEL_ENTITY, VIEW_ENTITY),
+	[PAGE_POPUP]: new PageStructureVkUi(PANEL_ENTITY, VIEW_ENTITY, ROOT_MAIN, true),
 }

@@ -1,37 +1,28 @@
-import {createStore, applyMiddleware, compose} from 'redux'
-import thunk from 'redux-thunk'
-import rootReducer from './modules'
-import {routerMiddleware} from 'connected-react-router'
-import {createHashHistory} from 'history'
-
-export const history = createHashHistory({
-    hashType: 'noslash'
-})
+import {createStore, applyMiddleware, compose} from "redux"
+import thunk from "redux-thunk"
+import rootReducer from "./modules"
+import {isDevEnv} from "./tools/helpers"
 
 const initialState = {}
 const enhancers = []
 const middleware = [
 	thunk,
-	routerMiddleware(history),
 ]
 
-if (process.env.NODE_ENV === 'development') {
-	const devToolsExtension = window.devToolsExtension
+const composeEnhancers = isDevEnv() && typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+		}) : compose
 
-	if (typeof devToolsExtension === 'function') {
-		enhancers.push(devToolsExtension())
-	}
-}
-
-const composedEnhancers = compose(
+const composedEnhancers = composeEnhancers(
 	applyMiddleware(...middleware),
-	...enhancers
+	...enhancers,
 )
 
 const store = createStore(
-	rootReducer(history),
+	rootReducer,
 	initialState,
-	composedEnhancers
+	composedEnhancers,
 )
 
 export default store

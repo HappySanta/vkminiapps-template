@@ -1,19 +1,23 @@
 import React from 'react'
 
+export function isDevEnv() {
+	return process.env.NODE_ENV === 'development'
+}
+
 export function devErrorLog(e) {
-	if (process.env.NODE_ENV === 'development') {
+	if (isDevEnv()) {
 		console.error(e)
 	}
 }
 
 export function devLog(any) {
-	if (process.env.NODE_ENV === 'development') {
+	if (isDevEnv()) {
 		console.log(any)
 	}
 }
 
 export function throwDevError(error) {
-	if (process.env.NODE_ENV === 'development') {
+	if (isDevEnv()) {
 		throw error
 	}
 }

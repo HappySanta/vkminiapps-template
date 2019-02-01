@@ -1,4 +1,4 @@
-import {generatePath, matchPath} from "react-router"
+import {generatePath, matchPath} from "react-router-dom"
 import routes, {PAGE_MAIN, PANEL_MAIN, ROOT_MAIN, VIEW_MAIN} from "./routes"
 import {PageStructureVkUi} from "./PageStructureVkUi"
 
@@ -19,7 +19,6 @@ export class Route {
 			match = matchPath(location, pageId)
 			return !!match && match.isExact
 		})
-		console.log(match)
 		if (!match || (match && !match.isExact)) {
 			return route
 		}
@@ -66,5 +65,9 @@ export class Route {
 			return this.structure.rootId
 		}
 		return ROOT_MAIN
+	}
+
+	isPopup() {
+		return this.structure.isPopup
 	}
 }

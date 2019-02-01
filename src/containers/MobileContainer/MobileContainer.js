@@ -1,24 +1,19 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, {Component} from "react"
+import {connect} from "react-redux"
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import L from "../../lang/L"
-import {
-	popPage, pushPage,
-} from "../../modules/PageModule"
-import {withRouter} from "react-router"
+import {handleLocation} from "../../modules/LocationModule"
 import Error from "../../components/Error/Error"
-import Icon24Back from '@vkontakte/icons/dist/24/back'
-import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back'
-import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from '@vkontakte/vkui'
-import '@vkontakte/vkui/dist/vkui.css'
+import Icon24Back from "@vkontakte/icons/dist/24/back"
+import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
+import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from "@vkontakte/vkui"
+import "@vkontakte/vkui/dist/vkui.css"
 import ScreenSpinner from "../../components/ScreenSpinner/ScreenSpinner"
 import {Route} from "../../routing/Route"
-import {
-	PAGE_ENTITY,
-	PANEL_ENTITY,
-	PANEL_MAIN, VIEW_ENTITY,
-	VIEW_MAIN
-} from "../../routing/routes"
+import {PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_ENTITY, VIEW_MAIN} from "../../routing/routes"
+import BottomPopup from "../../components/BottomPopup/BottomPopup"
+import {setBootstrap} from "../../modules/BootstrapModule"
+import {popPage, pushPage} from "../../index"
 
 const osName = platform()
 
@@ -99,12 +94,8 @@ class MobileContainer extends Component {
 		}
 	}
 
-	goBack(handed = false) {
-		if (handed) {
-			this.resetHandedPopup()
-			return
-		}
-		this.props.popPage()
+	goBack() {
+		popPage()
 	}
 
 	renderBackPanelHeader(title, noShadow = false) {
@@ -117,8 +108,20 @@ class MobileContainer extends Component {
 		</PanelHeader>
 	}
 
-	getMainPanelHistory() {
-        return []
+	renderPopup(route) {
+		if (!route.isPopup) {
+			return false
+		}
+		switch (route.pageId) {
+			case PAGE_POPUP:
+				return <BottomPopup onClick={() => this.goBack()} showCross={true} onClose={() => this.goBack()}>
+					<div style={{background: '#FFF', minHeight: 200, padding: 16, borderRadius: '14px 14px 0 0'}}>
+						Попап
+					</div>
+				</BottomPopup>
+			default:
+				return false
+		}
 	}
 
 	render() {
@@ -142,28 +145,32 @@ class MobileContainer extends Component {
 				</div>
 			</div>
 		}
+
 		let route = Route.fromLocation(this.props.location.pathname)
 		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
-				  onSwipeBack={() => this.goBack()}
-				  history={this.getMainPanelHistory()}
 				  activePanel={route.getPanelId()}>
 				<Panel id={PANEL_MAIN}>
 					<PanelHeader>
 						Главная страница
 					</PanelHeader>
 					<div>
-						<Button onClick={() => this.props.pushPage(PAGE_ENTITY, {entityId: 0})}>
+						<Button onClick={() => pushPage(PAGE_ENTITY, {entityId: 0})}>
 							На страницу сущности
 						</Button>
 					</div>
 				</Panel>
 			</View>
-			<View id={VIEW_ENTITY} activePanel={route.getPanelId()}>
+			<View id={VIEW_ENTITY} popout={this.renderPopup(route)} activePanel={route.getPanelId()}>
 				<Panel id={PANEL_ENTITY}>
 					{this.renderBackPanelHeader('Сущность')}
 					<div>
 						Страница с какой-либо сущностью
+					</div>
+					<div>
+						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0, myId: 0})}>
+							Открыть попап
+						</Button>
 					</div>
 				</Panel>
 			</View>
@@ -173,13 +180,15 @@ class MobileContainer extends Component {
 
 function mapStateToProps(state) {
 	return {
-        fatal: state.FatalErrorModule,
-        loaded: state.BootstrapModule.loaded,
+		fatal: state.FatalErrorModule,
+		loaded: state.BootstrapModule.loaded,
 	}
 }
 
-export default withRouter(connect(mapStateToProps, {
+export default connect(mapStateToProps, {
 	removeFatalError,
 	popPage,
-    pushPage,
-})(MobileContainer))
+	pushPage,
+	setBootstrap,
+	handleLocation,
+})(MobileContainer)
