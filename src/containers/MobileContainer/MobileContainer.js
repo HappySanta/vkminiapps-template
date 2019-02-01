@@ -53,16 +53,6 @@ class MobileContainer extends Component {
 		}
 	}
 
-	componentDidMount() {
-		window.addEventListener("scroll", () => {
-			if (window.pageYOffset > 50) {
-				document.querySelector('.View__header').style.opacity = 1
-			} else {
-				document.querySelector('.View__header').style.opacity = 0
-			}
-		});
-	}
-
 	getPanelHeight() {
 		return osName === IOS ? 44 : 56
 	}
