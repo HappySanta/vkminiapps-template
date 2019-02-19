@@ -5,9 +5,9 @@ import L from "../../lang/L"
 import Error from "../../components/Error/Error"
 import Icon24Back from "@vkontakte/icons/dist/24/back"
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
+import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
 import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from "@vkontakte/vkui"
 import "@vkontakte/vkui/dist/vkui.css"
-import ScreenSpinner from "../../components/ScreenSpinner/ScreenSpinner"
 import {Route} from "../../routing/Route"
 import {
 	PAGE_ENTITY, PAGE_ENTITY_NEXT,
@@ -19,8 +19,8 @@ import {
 	VIEW_MAIN
 } from "../../routing/routes"
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
-import {setBootstrap} from "../../modules/BootstrapModule"
 import {popPage, pushPage} from "../../index"
+import {isDeviceSupported} from "../../tools/helpers"
 
 const osName = platform()
 
@@ -53,29 +53,6 @@ class MobileContainer extends Component {
 		}
 	}
 
-	getPanelHeight() {
-		return osName === IOS ? 44 : 56
-	}
-
-	getAndroidVersion() {
-		let ua = (window.navigator.userAgent).toLowerCase()
-		// eslint-disable-next-line
-		let match = ua.match(/android\s([0-9\.]*)/)
-		if (ua.indexOf('chrome/6') !== -1) {
-			return false
-		}
-		return match ? parseInt(match[1], 10) : false
-	}
-
-	getIosVersion() {
-		if (/iP(hone|od|ad)/.test(navigator.platform)) {
-			let v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/)
-			return parseInt(v[1], 10)
-		} else {
-			return false
-		}
-	}
-
 	recheckDimensions() {
 		if (MobileContainer.deviceWidth < 10) {
 			setTimeout(() => {
@@ -91,22 +68,31 @@ class MobileContainer extends Component {
 		}
 	}
 
+	getPanelHeight() {
+		return osName === IOS ? 44 : 56
+	}
+
 	goBack() {
 		popPage()
 	}
 
-	renderBackPanelHeader(title, noShadow = false) {
+	getViewHistory(route, viewId) {
+		let {viewHistory} = this.props
+		return route.isPopup() ? [] : viewHistory[viewId]
+	}
+
+	renderBackPanelHeader(title, noShadow = false, modal = false) {
 		return <PanelHeader
 			noShadow={noShadow}
 			left={<HeaderButton onClick={() => this.goBack()}>
-				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
+				{!modal ? (osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>) : (osName === IOS ? L.t('cancel') : <Icon24Cancel/>)}
 			</HeaderButton>}>
 			{title}
 		</PanelHeader>
 	}
 
 	renderPopup(route) {
-		if (!route.isPopup) {
+		if (!route.isPopup()) {
 			return false
 		}
 		switch (route.pageId) {
@@ -121,33 +107,35 @@ class MobileContainer extends Component {
 		}
 	}
 
+	renderDeviceNotSupportedScreen() {
+		return <div className="not-supported" style={{
+			width: MobileContainer.deviceWidth,
+			height: MobileContainer.deviceHeight,
+		}}>
+			<div className="plak-wrapper">
+				<div className="plak">
+				</div>
+				<div className="plak-text">
+					{L.t('not_supported')}
+				</div>
+			</div>
+		</div>
+	}
+
 	render() {
-		let {loaded, fatal, location, viewHistory} = this.props
-		if (!loaded) {
-			return <ScreenSpinner h={MobileContainer.deviceHeight + this.getPanelHeight()}/>
-		}
+		let {fatal, location} = this.props
 		if (fatal) {
 			return <Error error={this.props.fatal} onClose={() => this.props.removeFatalError()}/>
 		}
-		if ((this.getAndroidVersion() && this.getAndroidVersion() <= 4) || (this.getIosVersion() && this.getIosVersion() <= 8)) {
-			return <div className="not-supported" style={{
-				width: MobileContainer.deviceWidth,
-				height: MobileContainer.deviceHeight,
-			}}>
-				<div className="plak-wrapper">
-					<div className="plak">
-					</div>
-					<div className="plak-text">
-						{L.t('not_supported')}
-					</div>
-				</div>
-			</div>
+		if (!isDeviceSupported()) {
+			return this.renderDeviceNotSupportedScreen()
 		}
-		let route = Route.fromLocation(location.pathname)
+		let route = Route.fromLocation(location.pathname, location.state)
 		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
 				  activePanel={route.getPanelId()}
-				  history={viewHistory[VIEW_MAIN]}
+				  history={this.getViewHistory(route, VIEW_MAIN)}
+				  popout={this.renderPopup(route)}
 				  onSwipeBack={() => popPage()}>
 				<Panel id={PANEL_MAIN}>
 					<PanelHeader>
@@ -168,9 +156,13 @@ class MobileContainer extends Component {
 					{this.renderBackPanelHeader('Следующая страница')}
 				</Panel>
 			</View>
-			<View history={viewHistory[VIEW_ENTITY]} id={VIEW_ENTITY} popout={this.renderPopup(route)} activePanel={route.getPanelId()}>
+			<View id={VIEW_ENTITY}
+				  popout={this.renderPopup(route)}
+				  history={this.getViewHistory(route, VIEW_ENTITY)}
+				  activePanel={route.getPanelId()}
+				  onSwipeBack={() => popPage()}>
 				<Panel id={PANEL_ENTITY}>
-					{this.renderBackPanelHeader('Сущность')}
+					{this.renderBackPanelHeader('Сущность', false, true)}
 					<div>
 						Страница с какой-либо сущностью
 					</div>
@@ -196,7 +188,6 @@ class MobileContainer extends Component {
 function mapStateToProps(state) {
 	return {
 		fatal: state.FatalErrorModule,
-		loaded: state.BootstrapModule.loaded,
 		viewHistory: state.LocationModule.viewHistory,
 	}
 }
@@ -205,5 +196,4 @@ export default connect(mapStateToProps, {
 	removeFatalError,
 	popPage,
 	pushPage,
-	setBootstrap,
 })(MobileContainer)

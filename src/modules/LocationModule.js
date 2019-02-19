@@ -1,7 +1,7 @@
 import {Route} from "../routing/Route"
-import {bootstrap, setLoaded} from "./BootstrapModule"
-import routes from "../routing/routes"
+import routes, {PAGE_MAIN} from "../routing/routes"
 import {PageStructureVkUi} from "../routing/PageStructureVkUi"
+import {replacePage} from "../index"
 
 const SET_LOCATION_MODULE = "LocationModule.SET_LOCATION_MODULE"
 const PUSH_VIEW_HISTORY = "LocationModule.PUSH_VIEW_HISTORY"
@@ -91,17 +91,18 @@ function replaceViewHistory(currentViewId, nextViewId, nextPaneId) {
 	}
 }
 
-export function handleLocation(pathname, action) {
+export function handleLocation(pathname, action, isInitial = false) {
 	return (dispatch) => {
 		let route = Route.fromLocation(pathname)
-		dispatch(setViewHistory(route, action))
-		const resolve = () => {
-			switch (route.getPageId()) {
-				default:
-			}
-			dispatch(setLoaded(true))
+		if (isInitial && route.isPopup()) {
+			replacePage(PAGE_MAIN)
+			return
 		}
-		dispatch(bootstrap(resolve))
+		dispatch(setViewHistory(route, action))
+		const setPageData = (pageId) => {
+			//тут можно в зависимости от страницы подгрузить нужные данные
+		}
+		setPageData(route.getPageId())
 	}
 }
 

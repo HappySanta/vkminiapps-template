@@ -11,14 +11,14 @@
             <g id="Mask" transform="translate(0.000000, 188.000000)">
                 <g id="Button" transform="translate(325.000000, 2.000000)">
                     <rect id="Body" x="0" y="0" width="48" height="48"></rect>
-                    <circle id="Oval" fill-opacity="0.32" fill="#000000" cx="24" cy="24" r="12"></circle>
+                    <circle id="Oval" fill-opacity="0.08" fill="#001C3D" cx="24" cy="24" r="12"></circle>
                     <g id="Icon" transform="translate(16.000000, 16.000000)">
                         <g id="cancel_16">
                             <rect id="Rectangle" x="0" y="0" width="16" height="16"></rect>
                             <mask id="mask-2" fill="white">
                                 <use xlink:href="#path-1"></use>
                             </mask>
-                            <use id="Icon" fill="#FFFFFF" fill-rule="nonzero" xlink:href="#path-1"></use>
+                            <use id="Icon" fill="#818C99" fill-rule="nonzero" xlink:href="#path-1"></use>
                         </g>
                     </g>
                 </g>

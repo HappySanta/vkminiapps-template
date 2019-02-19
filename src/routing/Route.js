@@ -12,7 +12,7 @@ export class Route {
 	pageId
 	params
 
-	static fromLocation(location) {
+	static fromLocation(location, state) {
 		let route = new Route()
 		route.location = location
 		let match = null
@@ -25,7 +25,16 @@ export class Route {
 		}
 		route.params = match.params
 		route.pageId = match.path
-		route.structure = routes[route.pageId]
+		if (routes[route.pageId].isPopup && state && state.previousRoute) {
+			route.structure = new PageStructureVkUi(
+				state.previousRoute.getPanelId(),
+				state.previousRoute.getViewId(),
+				state.previousRoute.getRootId(),
+				true,
+			)
+		} else {
+			route.structure = routes[route.pageId]
+		}
 		return route
 	}
 

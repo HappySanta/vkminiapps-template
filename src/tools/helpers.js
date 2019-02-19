@@ -70,10 +70,25 @@ export function nToBr(string, cfg = {}) {
     return result
 }
 
-export function pushStoreItem() {
-	
+export function getAndroidVersion() {
+	let ua = (window.navigator.userAgent).toLowerCase()
+	// eslint-disable-next-line
+	let match = ua.match(/android\s([0-9\.]*)/)
+	if (ua.indexOf('chrome/6') !== -1) {
+		return false
+	}
+	return match ? parseInt(match[1], 10) : false
 }
 
-export function popStoreItem() {
-	
+export function getIosVersion() {
+	if (/iP(hone|od|ad)/.test(navigator.platform)) {
+		let v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/)
+		return parseInt(v[1], 10)
+	} else {
+		return false
+	}
+}
+
+export function isDeviceSupported() {
+	return !(getAndroidVersion() && getAndroidVersion() <= 4) || (getIosVersion() && getIosVersion() <= 8)
 }

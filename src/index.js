@@ -1,3 +1,8 @@
+import 'core-js/es6/map'
+import 'core-js/es6/set'
+import 'core-js/es6/promise'
+import 'core-js/es6/symbol'
+import 'core-js/es6/object'
 import React from "react"
 import mount from "./tools/mount"
 import VkSdk from "@happysanta/vk-apps-sdk"
@@ -14,10 +19,13 @@ import {ConfigProvider} from "@vkontakte/vkui"
 import {Router, Route, generatePath} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
 import {isDevEnv} from "./tools/helpers"
-
-VkConnect.send("VKWebAppInit", {})
+import {Route as MyRoute} from "./routing/Route"
 
 export function pushPage(pageId, params = {}, search = '') {
+	let nextRoute = MyRoute.fromPageId(pageId, params)
+	if (nextRoute.isPopup()) {
+		params = {...params, previousRoute: MyRoute.fromLocation(history.location.pathname)}
+	}
 	history.push({
 		pathname: generatePath(pageId, params),
 		state: params,
@@ -37,6 +45,11 @@ export function replacePage(pageId, params = {}, search = '') {
 	})
 }
 
+VkConnect.send("VKWebAppInit", {})
+
+const defaultHeaderSettings = {"status_bar_style": "dark", "action_bar_color": "#FFFFFF"}
+VkConnect.send("VKWebAppSetViewSettings", defaultHeaderSettings);
+
 /**
  * @type {VkStartParams}
  */
@@ -45,8 +58,7 @@ L.init(startParams.getLangCode()).then(() => {
 	history.listen((location, action) => {
 		store.dispatch(handleLocation(location.pathname, action))
 	})
-	store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH))
-	handleLocation(history.location.pathname)
+	store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH, true))
 	mount(<Provider store={store}>
 		<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
 			<Router history={history}>

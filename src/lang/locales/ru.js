@@ -1,7 +1,8 @@
 export default function ru() {
     return {
         translation: {
-            oops: 'Что-то пошло не так',
+            oops: 'Упс, что-то\nсломалось',
+			cancel: 'Отмена',
         }
     }
 }
