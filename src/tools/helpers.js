@@ -26,10 +26,6 @@ export function isRetina() {
 	return window.devicePixelRatio > 1
 }
 
-export function isMobile() {
-	return true
-}
-
 function parseLink(text,pref,cfg = {}) {
     let parts = text.split(/(\[[idclubpage0-9\-_]+\|.*?\]|<.*?>)/gmu)
     if (parts.length === 1) {

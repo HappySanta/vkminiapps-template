@@ -20,6 +20,7 @@ import {Router, Route, generatePath} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
 import {isDevEnv} from "./tools/helpers"
 import {Route as MyRoute} from "./routing/Route"
+import DesktopContainer from "./containers/DesktopContainer/DesktopContainer"
 
 export function pushPage(pageId, params = {}, search = '') {
 	let nextRoute = MyRoute.fromPageId(pageId, params)
@@ -62,7 +63,9 @@ L.init(startParams.getLangCode()).then(() => {
 	mount(<Provider store={store}>
 		<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
 			<Router history={history}>
-				<Route component={(props) => <MobileContainer {...props}/>}/>
+				<Route component={(props) =>
+					startParams.isMobile() ? <MobileContainer {...props}/> : <DesktopContainer {...props}/>
+				}/>
 			</Router>
 		</ConfigProvider>
 	</Provider>)

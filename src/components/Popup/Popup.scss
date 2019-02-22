@@ -1,0 +1,55 @@
+.Popup {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1000;
+	background-color: rgba(0, 0, 0, 0.68);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&__window {
+		width: 450px;
+		background-color: #FFF;
+		overflow: hidden;
+		border-radius: 10px;
+		position: relative;
+	}
+
+	&__close {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		background-color: rgba(255,255,255,0);
+		outline: 0;
+		width: 62px;
+		height: 54px;
+		cursor: pointer;
+		border: none;
+		position: absolute;
+		right: 0;
+		top:0;
+		background-image: url('./close.svg');
+		background-position: center center;
+		background-repeat: no-repeat;
+		&:hover {
+			opacity: 0.9;
+		}
+	}
+
+	&__header {
+		height: 54px;
+		font-size: 19px;
+		font-weight: 500;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: normal;
+		letter-spacing: normal;
+		color: #222222;
+		padding: 4px 25px 0;
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+	}
+}
