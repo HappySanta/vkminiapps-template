@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import ConnectionError from "./ConnectionError"
-import VkSdk from '../Vk/VkSdk'
+import VkSdk from "@happysanta/vk-apps-sdk"
 
 export default class Backend {
 

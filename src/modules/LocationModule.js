@@ -2,6 +2,8 @@ import {Route} from "../routing/Route"
 import routes, {PAGE_MAIN} from "../routing/routes"
 import {PageStructureVkUi} from "../routing/PageStructureVkUi"
 import {replacePage} from "../index"
+import Backend from "../tools/Backend"
+import {setFatalError} from "./FatalErrorModule"
 
 const SET_LOCATION_MODULE = "LocationModule.SET_LOCATION_MODULE"
 const PUSH_VIEW_HISTORY = "LocationModule.PUSH_VIEW_HISTORY"
@@ -101,6 +103,11 @@ export function handleLocation(pathname, action, isInitial = false) {
 		dispatch(setViewHistory(route, action))
 		const setPageData = (pageId) => {
 			//тут можно в зависимости от страницы подгрузить нужные данные
+			Backend.request('lala').then(r => {
+				console.log(r)
+			}).catch(e => {
+				dispatch(setFatalError(e))
+			})
 		}
 		setPageData(route.getPageId())
 	}
