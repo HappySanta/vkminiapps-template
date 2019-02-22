@@ -9,15 +9,7 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
 import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from "@vkontakte/vkui"
 import "@vkontakte/vkui/dist/vkui.css"
 import {Route} from "../../routing/Route"
-import {
-	PAGE_ENTITY, PAGE_ENTITY_NEXT,
-	PAGE_NEXT,
-	PAGE_POPUP,
-	PANEL_ENTITY, PANEL_ENTITY_NEXT,
-	PANEL_MAIN, PANEL_NEXT,
-	VIEW_ENTITY,
-	VIEW_MAIN
-} from "../../routing/routes"
+import {PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_MAIN} from "../../routing/routes"
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
 import {popPage, pushPage} from "../../index"
 import {isDeviceSupported} from "../../tools/helpers"
@@ -141,41 +133,16 @@ class MobileContainer extends Component {
 					<PanelHeader>
 						Главная страница
 					</PanelHeader>
-					<div>
+					<div style={{textAlign: 'center', paddingTop: 10}}>
 						<Button onClick={() => pushPage(PAGE_ENTITY, {entityId: 0})}>
 							На страницу сущности
 						</Button>
 					</div>
-					<div>
-						<Button onClick={() => pushPage(PAGE_NEXT)}>
-							Следующая страница
-						</Button>
-					</div>
 				</Panel>
-				<Panel id={PANEL_NEXT}>
-					{this.renderBackPanelHeader('Следующая страница')}
-				</Panel>
-			</View>
-			<View id={VIEW_ENTITY}
-				  popout={this.renderPopup(route)}
-				  history={this.getViewHistory(route, VIEW_ENTITY)}
-				  activePanel={route.getPanelId()}
-				  onSwipeBack={() => popPage()}>
 				<Panel id={PANEL_ENTITY}>
-					{this.renderBackPanelHeader('Сущность', false, true)}
-					<div>
-						Страница с какой-либо сущностью
-					</div>
-					<div>
-						<Button onClick={() => pushPage(PAGE_ENTITY_NEXT, {entityId: 0})}>
-							На след. страницу сущности
-						</Button>
-					</div>
-				</Panel>
-				<Panel id={PANEL_ENTITY_NEXT}>
-					{this.renderBackPanelHeader('Следующая страница сущности')}
-					<div>
-						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0, myId: 0})}>
+					{this.renderBackPanelHeader('Сущность')}
+					<div style={{textAlign: 'center', paddingTop: 10}}>
+						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0})}>
 							Открыть попап
 						</Button>
 					</div>
