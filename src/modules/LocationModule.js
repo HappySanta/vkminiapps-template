@@ -103,11 +103,6 @@ export function handleLocation(pathname, action, isInitial = false) {
 		dispatch(setViewHistory(route, action))
 		const setPageData = (pageId) => {
 			//тут можно в зависимости от страницы подгрузить нужные данные
-			Backend.request('lala').then(r => {
-				console.log(r)
-			}).catch(e => {
-				dispatch(setFatalError(e))
-			})
 		}
 		setPageData(route.getPageId())
 	}
