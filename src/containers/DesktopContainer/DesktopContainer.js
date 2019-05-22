@@ -1,12 +1,16 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 import {removeFatalError} from "../../modules/FatalErrorModule"
-import Error from "../../components/Error/Error"
+import ErrorDesktop from "../../components/ErrorDesktop/ErrorDesktop"
 import {Route} from "../../routing/Route"
 import {PAGE_ENTITY, PAGE_MAIN, PAGE_POPUP} from "../../routing/routes"
 import {popPage, pushPage} from "../../index"
-import {Button} from "@vkontakte/vkui"
-import Popup from "../../components/Popup/Popup"
+import {Button} from "@happysanta/vk-app-ui"
+import PopupDesktop from "../../components/PopupDesktop/PopupDesktop"
+import '@happysanta/vk-app-ui/dist/vkappui.css'
+
+export const CONTENT_WIDTH = 660
+export const DEFAULT_SCROLL_SPEED = 1500
 
 class DesktopContainer extends Component {
 
@@ -14,25 +18,19 @@ class DesktopContainer extends Component {
 		popPage()
 	}
 
-	renderPopupHeader() {
-		return <div>
-			Мой попап
-		</div>
-	}
-
 	renderPopup(route) {
 		if (!route.isPopup()) {
-			return false
+			return null
 		}
-		switch (route.pageId) {
+		switch (route.getPopupId()) {
 			case PAGE_POPUP:
-				return <Popup onClick={() => this.goBack()} header={this.renderPopupHeader()} onClose={() => this.goBack()}>
-					<div style={{background: '#FFF', minHeight: 200, padding: 16, borderRadius: '14px 14px 0 0'}}>
+				return <PopupDesktop showCross={true} onClick={() => this.goBack()} onClose={() => this.goBack()}>
+					<div style={{background: '#FFF', minHeight: 200, padding: 16}}>
 						Попап
 					</div>
-				</Popup>
+				</PopupDesktop>
 			default:
-				return false
+				return null
 		}
 	}
 
@@ -64,7 +62,7 @@ class DesktopContainer extends Component {
 	render() {
 		let {fatal, location} = this.props
 		if (fatal) {
-			return <Error error={this.props.fatal} onClose={() => this.props.removeFatalError()}/>
+			return <ErrorDesktop error={fatal} onClose={() => this.props.removeFatalError()}/>
 		}
 		let route = Route.fromLocation(location.pathname, location.state)
 		return <div>

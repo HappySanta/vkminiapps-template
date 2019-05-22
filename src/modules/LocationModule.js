@@ -91,7 +91,7 @@ function replaceViewHistory(currentViewId, nextViewId, nextPaneId) {
 	}
 }
 
-export function handleLocation(pathname, action, isInitial = false) {
+export function handleLocation(pathname, action, state, isInitial = false) {
 	return (dispatch) => {
 		let route = Route.fromLocation(pathname)
 		if (isInitial && route.isPopup()) {
@@ -99,10 +99,10 @@ export function handleLocation(pathname, action, isInitial = false) {
 			return
 		}
 		dispatch(setViewHistory(route, action))
-		const setPageData = (pageId) => {
+		const handlePageData = (pageId) => {
 			//тут можно в зависимости от страницы подгрузить нужные данные
 		}
-		setPageData(route.getPageId())
+		handlePageData(route.getPageId())
 	}
 }
 

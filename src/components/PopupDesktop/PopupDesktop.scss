@@ -1,0 +1,87 @@
+.PopupDesktop {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1000;
+	background-color: rgba(0, 0, 0, 0.68);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&__window {
+		min-width: 400px;
+		background-color: transparent;
+		overflow: hidden;
+		border-radius: 5px;
+		position: relative;
+		opacity: 0;
+		transition: opacity 300ms linear;
+
+		&.rendered {
+			opacity: 1;
+		}
+	}
+
+	&__close {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		background-color: rgba(255,255,255,0);
+		outline: 0;
+		width: 62px;
+		height: 54px;
+		cursor: pointer;
+		border: none;
+		position: absolute;
+		right: 0;
+		top:0;
+		background-image: url('./close.svg');
+		background-position: center center;
+		background-repeat: no-repeat;
+		opacity: 0.8;
+		transition: opacity 0.1s ease-in;
+		&:hover {
+			opacity: 1;
+		}
+
+		&--body {
+			z-index: 1;
+			background-image: url('./close_body.svg');
+		}
+	}
+
+	&__header {
+		padding: 20px 25px 15px;
+		align-items: center;
+		background-color: #ffffff;
+		border-radius: 5px 5px 0 0;
+		border-bottom: 1px solid #E7E8EC;
+	}
+
+	&__header-text {
+		font-weight: 500;
+		font-size: 19px;
+		line-height: 19px;
+		color: #222222;
+		text-align: left;
+		white-space: nowrap;
+		max-width: 350px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__bottom {
+		border-top: 1px solid #E7E8EC;
+		padding: 0 25px;
+		background: #F7F8FA;
+		height: 58px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		button + button {
+			margin-left: 10px;
+		}
+	}
+}

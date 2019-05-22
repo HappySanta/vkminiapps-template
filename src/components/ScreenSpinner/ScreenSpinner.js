@@ -5,10 +5,15 @@ import "./ScreenSpinner.css"
 export default class ScreenSpinner extends Component {
 
 	render() {
-		let {h} = this.props
+		let {height, desktop} = this.props
 		let style = {}
-		if (this.props.h) {
-			style.minHeight = h
+		if (height) {
+			style.minHeight = height
+		} else if (!desktop) {
+			style.minHeight = '100vh'
+		}
+		if (desktop) {
+			style.background = '#FFF'
 		}
 		return <div className="ScreenSpinner" style={style}>
 			<div className="ScreenSpinner__inner">

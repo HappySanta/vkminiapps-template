@@ -11,6 +11,7 @@ export class Route {
 	location
 	pageId
 	params
+	popupId
 
 	static fromLocation(location, state) {
 		let route = new Route()
@@ -26,14 +27,25 @@ export class Route {
 		route.params = match.params
 		route.pageId = match.path
 		if (routes[route.pageId].isPopup && state && state.previousRoute) {
-			route.structure = new PageStructureVkUi(
-				state.previousRoute.getPanelId(),
-				state.previousRoute.getViewId(),
-				state.previousRoute.getRootId(),
-				true,
-			)
+			if (routes[route.pageId] instanceof PageStructureVkUi) {
+				route.structure = new PageStructureVkUi(
+					state.previousRoute.getPanelId(),
+					state.previousRoute.getViewId(),
+					state.previousRoute.getRootId(),
+					true,
+				)
+				route.popupId = match.path
+				route.pageId = state.previousRoute.pageId
+			} else {
+				route.pageId = state.previousRoute.pageId
+				route.popupId = match.path
+				route.structure = routes[match.path]
+			}
 		} else {
 			route.structure = routes[route.pageId]
+			if (route.isPopup()) {
+				route.popupId = match.path
+			}
 		}
 		return route
 	}
@@ -82,8 +94,12 @@ export class Route {
 	isPopup() {
 		return this.structure.isPopup
 	}
-	
+
 	getParams() {
 		return this.params
+	}
+
+	getPopupId() {
+		return this.popupId
 	}
 }

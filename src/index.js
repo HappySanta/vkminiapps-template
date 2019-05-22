@@ -1,8 +1,8 @@
-import 'core-js/es6/map'
-import 'core-js/es6/set'
-import 'core-js/es6/promise'
-import 'core-js/es6/symbol'
-import 'core-js/es6/object'
+import 'core-js/features/map'
+import 'core-js/features/set'
+import 'core-js/features/promise'
+import 'core-js/features/symbol'
+import 'core-js/features/object'
 import React from "react"
 import mount from "./tools/mount"
 import VkSdk from "@happysanta/vk-apps-sdk"
@@ -12,9 +12,8 @@ import {Provider} from "react-redux"
 import MobileContainer from "./containers/MobileContainer/MobileContainer"
 import L from "./lang/L"
 import "./style/index.css"
-import Error from "./components/Error/Error"
+import ErrorMobile from "./components/ErrorMobile/ErrorMobile"
 import registerServiceWorker from "./registerServiceWorker"
-import * as VkConnect from "@vkontakte/vkui-connect/index"
 import {ConfigProvider} from "@vkontakte/vkui"
 import {Router, Route, generatePath} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
@@ -24,11 +23,16 @@ import DesktopContainer from "./containers/DesktopContainer/DesktopContainer"
 
 export function pushPage(pageId, params = {}, search = '') {
 	let nextRoute = MyRoute.fromPageId(pageId, params)
+	let currentRoute = MyRoute.fromLocation(history.location.pathname)
 	if (nextRoute.isPopup()) {
-		params = {...params, previousRoute: MyRoute.fromLocation(history.location.pathname)}
+		if (currentRoute.isPopup() && !VkSdk.getStartParams().isMobile()) {
+			replacePage(pageId, params)
+			return
+		}
+		params = {...params, previousRoute: currentRoute}
 	}
 	history.push({
-		pathname: generatePath(pageId, params),
+		pathname: nextRoute.getLocation(),
 		state: params,
 		search: search,
 	})
@@ -39,6 +43,15 @@ export function popPage() {
 }
 
 export function replacePage(pageId, params = {}, search = '') {
+	let nextRoute = MyRoute.fromPageId(pageId, params)
+	if (nextRoute.isPopup()) {
+		let previousRoute = MyRoute.fromLocation(history.location.pathname)
+		if (params.pageId) {
+			previousRoute.pageId = params.pageId
+			delete params.pageId
+		}
+		params = {...params, previousRoute: previousRoute}
+	}
 	history.replace({
 		pathname: generatePath(pageId, params),
 		state: params,
@@ -46,20 +59,17 @@ export function replacePage(pageId, params = {}, search = '') {
 	})
 }
 
-VkConnect.send("VKWebAppInit", {})
-
-const defaultHeaderSettings = {"status_bar_style": "dark", "action_bar_color": "#FFFFFF"}
-VkConnect.send("VKWebAppSetViewSettings", defaultHeaderSettings);
-
+VkSdk.init()
 /**
  * @type {VkStartParams}
  */
 let startParams = VkSdk.getStartParams()
+window._hsMobileUI = startParams.isMobile()
 L.init(startParams.getLangCode()).then(() => {
 	history.listen((location, action) => {
-		store.dispatch(handleLocation(location.pathname, action))
+		store.dispatch(handleLocation(location.pathname, action, location.state))
 	})
-	store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH, true))
+	store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH, history.location.state, true))
 	mount(<Provider store={store}>
 		<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
 			<Router history={history}>
@@ -70,7 +80,7 @@ L.init(startParams.getLangCode()).then(() => {
 		</ConfigProvider>
 	</Provider>)
 }).catch(e => {
-	mount(<Error error={e}/>)
+	mount(<ErrorMobile error={e}/>)
 })
 
 registerServiceWorker()

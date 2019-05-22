@@ -1,4 +1,8 @@
 import React from 'react'
+import VkSdk from "@happysanta/vk-apps-sdk"
+import {DEFAULT_SCROLL_SPEED} from "../containers/DesktopContainer/DesktopContainer"
+import {Link} from "@happysanta/vk-app-ui"
+import {Link as UILink} from "@vkontakte/vkui"
 
 export function isDevEnv() {
 	return process.env.NODE_ENV === 'development'
@@ -23,47 +27,51 @@ export function throwDevError(error) {
 }
 
 export function isRetina() {
-	return window.devicePixelRatio > 1
+	return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3)) ||
+		(((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)').matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent))
 }
 
-function parseLink(text,pref,cfg = {}) {
-    let parts = text.split(/(\[[idclubpage0-9\-_]+\|.*?\]|<.*?>)/gmu)
-    if (parts.length === 1) {
-        return parts[0]
-    }
-    let res = []
-    parts.forEach( (t,i) => {
-        if (t.match(/^\[[idclubpage0-9\-_]+\|.*?\]$/gmu) && !cfg['noLink']) {
-            let tag = t.split('|')
-            let href = 'https://vk.com/' + tag[0].replace('[', '')
-            let text = tag[1].replace(']', '')
-            res.push(<a href={href} rel="noopener noreferrer" target="_blank" key={pref + '_' + i}>{text}</a>)
-        } else if (t.match(/^<.*?>$/gmu) && !cfg['noStrong']) {
-            res.push(<strong key={pref + '_' + i}>{t.substr(1, t.length-2)}</strong>)
-        } else {
-            res.push(t)
-        }
-    } )
-    return res
+function parseLink(text, pref, cfg = {}) {
+	const regexp = /(\[[a-zA-Z@:/.0-9\-_?=&#]+\|.*?\]|<.*?>)/gmu
+	let parts = text.split(regexp)
+	if (parts.length === 1) {
+		return parts[0]
+	}
+	let res = []
+	parts.forEach((t, i) => {
+		if (t.indexOf('[') === 0 && !cfg['noLink']) {
+			let tag = t.split('|')
+			let href = tag[0].replace('[', '')
+			let text = tag[1].replace(']', '')
+			if (VkSdk.getStartParams().isMobile()) {
+				res.push(<UILink href={href} rel="noopener noreferrer" target="_blank" key={pref + '_' + i}>{text}</UILink>)
+			} else {
+				res.push(<Link href={href} rel="noopener noreferrer" target="_blank" key={pref + '_' + i}>{text}</Link>)
+			}
+		} else {
+			res.push(t)
+		}
+	})
+	return res
 }
 
 export function nToBr(string, cfg = {}) {
 	string = string || ""
 	if (!cfg['noTypography']) {
-        string = string.replace(/&shy;/g, "\u00AD")
-        string = string.replace(/&nbsp;/g, "\u00A0")
-        string = string.replace(/&#8209;/g, "\u2011")
-    }
-    let stringArray = string.split('\n')
-    let length = stringArray.length
-    let result = []
-    for (let i = 0; i < length; i++) {
+		string = string.replace(/&shy;/g, "\u00AD")
+		string = string.replace(/&nbsp;/g, "\u00A0")
+		string = string.replace(/&#8209;/g, "\u2011")
+	}
+	let stringArray = string.split('\n')
+	let length = stringArray.length
+	let result = []
+	for (let i = 0; i < length; i++) {
 		result.push(parseLink(stringArray[i], i, cfg))
-        if (i !== length - 1) {
-            result.push(<br key={i}/>)
-        }
-    }
-    return result
+		if (i !== length - 1) {
+			result.push(<br key={i}/>)
+		}
+	}
+	return result
 }
 
 export function getAndroidVersion() {
@@ -87,4 +95,24 @@ export function getIosVersion() {
 
 export function isDeviceSupported() {
 	return !(getAndroidVersion() && getAndroidVersion() <= 4) || (getIosVersion() && getIosVersion() <= 8)
+}
+
+export function hasLength(item) {
+	return item && item.length
+}
+
+export function scrollDesktopToPopupHeader(speed = DEFAULT_SCROLL_SPEED) {
+	if (VkSdk.getStartParams().isMobile()) {
+		return
+	}
+	let popup = document.querySelector('.PopupDesktop__window')
+	if (!popup) {
+		return
+	}
+	let rect = popup.getBoundingClientRect()
+	if (!rect || !rect.top) {
+		return
+	}
+	let scrollPosition = rect.top
+	VkSdk.scroll(scrollPosition, speed).then().catch()
 }

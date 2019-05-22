@@ -1,0 +1,79 @@
+.ErrorDesktop {
+	height: 100vh;
+	background: #FFFFFF;
+	position: relative;
+
+	&__details {
+
+	}
+
+	&__body {
+		width: 100%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		padding: 16px;
+		box-sizing: border-box;
+	}
+
+	&__sad {
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		background: #FFFDDD url("./img/error.jpg") no-repeat center center/cover;
+		margin: 0 auto 24px;
+
+		@media(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+				background: #FFFDDD url("./img/error_2x.jpg") no-repeat center center/cover;
+		}
+	}
+
+	&__title {
+		font-size: 30px;
+		font-weight: 700;
+		color: #2C2D2E;
+		text-align: center;
+		line-height: 34px;
+		max-width: 360px;
+		margin: auto;
+	}
+
+	&__bottom {
+		padding: 27px;
+		text-align: center;
+	}
+
+	&__to-details + &__close {
+		padding-top: 15px;
+	}
+
+	&__details {
+		background: #ffffff;
+		padding: 25px;
+		max-width: 400px;
+		box-sizing: border-box;
+		min-height: 300px;
+		word-break: break-word;
+	}
+
+	&__details-header {
+		font-size: 19px;
+		color: #222222;
+		font-weight: 600;
+		line-height: 21px;
+		padding-bottom: 10px;
+		padding-right: 30px;
+	}
+
+	&__details-text {
+		font-size: 13px;
+		color: #000000;
+		line-height: 19px;
+	}
+
+	&__close {
+		text-align: center;
+		width: 100%;
+	}
+}

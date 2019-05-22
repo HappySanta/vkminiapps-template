@@ -22,3 +22,5 @@ yarn-error.log*
 /.env
 .idea
 *.css
+/src/setupProxy.js
+.env

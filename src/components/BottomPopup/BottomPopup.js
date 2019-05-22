@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux"
 import './BottomPopup.css'
-import {PopoutWrapper} from "@vkontakte/vkui"
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import ScrollablePopoutWrapper from "../ScrollablePopoutWrapper/ScrollablePopoutWrapper"
 
 class BottomPopup extends Component {
 
@@ -19,7 +19,7 @@ class BottomPopup extends Component {
 		}, 200)
 	}
 
-	onClose() {
+	onClose(e) {
 		if (this.timer) {
 			return
 		}
@@ -28,36 +28,45 @@ class BottomPopup extends Component {
 			this.props.onClose()
 			this.timer = null
 		}, 250)
+		e.stopPropagation()
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer)
 	}
 
 	render() {
-		let {showCross} = this.props
-		return <PopoutWrapper v="bottom">
+		let {showCross, children} = this.props
+		const childrenWithOnClose = React.Children.map(children, child =>
+			React.cloneElement(child, {onClose: (e) => this.onClose(e)})
+		)
+		return <ScrollablePopoutWrapper v="bottom" onClick={(e) => this.onClose(e)}>
 			<ReactCSSTransitionGroup transitionName="PopupAnimation"
 									 className="PopupAnimationWrapper"
 									 transitionEnterTimeout={200}
 									 transitionLeaveTimeout={200}>
-				{this.state.rendered ? <div style={this.props.style || {}} className="BottomPopup">
+				{this.state.rendered ? <div style={this.props.style || {}} className="BottomPopup"
+											onClick={(e) => {
+												e.stopPropagation();
+												return false
+											}}>
 					<div className="BottomPopup__header">
 						{showCross ? <div className="BottomPopup__close"
-										  onClick={() => this.onClose()}>
+										  onClick={(e) => this.onClose(e)}>
 						</div> : null}
 					</div>
-					{this.props.children}
+					{childrenWithOnClose}
 					{this.props.footer ? <div className="BottomPopup__footer">
 						{this.props.footer}
-					</div>: null}
+					</div> : null}
 				</div> : null}
 			</ReactCSSTransitionGroup>
-		</PopoutWrapper>
+		</ScrollablePopoutWrapper>
 	}
-
 }
 
 function mapStateToProps(state) {
-	return {
-
-	}
+	return {}
 }
 
 export default connect(mapStateToProps, {})(BottomPopup)

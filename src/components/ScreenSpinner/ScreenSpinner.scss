@@ -1,5 +1,8 @@
 .ScreenSpinner {
-	background-color: #EDEEF0;
+	background-color: #ebedf0;
+	@supports(--css: variables) {
+		background-color: var(--background_page);
+	}
 	position: relative;
 
 	&__inner {

@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {connect} from "react-redux"
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import L from "../../lang/L"
-import Error from "../../components/Error/Error"
+import ErrorMobile from "../../components/ErrorMobile/ErrorMobile"
 import Icon24Back from "@vkontakte/icons/dist/24/back"
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
@@ -12,7 +12,7 @@ import {Route} from "../../routing/Route"
 import {PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_MAIN} from "../../routing/routes"
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
 import {popPage, pushPage} from "../../index"
-import {isDeviceSupported} from "../../tools/helpers"
+import {isDevEnv, isDeviceSupported} from "../../tools/helpers"
 
 const osName = platform()
 
@@ -20,6 +20,19 @@ class MobileContainer extends Component {
 
 	static deviceWidth = 0
 	static deviceHeight = 0
+
+	androidRecheckWidthBlocked = false
+
+	state = {
+		headerHeight: 0,
+		loadedDimensionsChecked: false,
+	}
+
+	needRecheckDimensions() {
+		return MobileContainer.deviceWidth < 10 ||
+			!this.state.headerHeight
+			|| (this.state.headerHeight === 44 && osName === IOS && !isDevEnv())
+	}
 
 	constructor(props) {
 		super(props)
@@ -29,39 +42,69 @@ class MobileContainer extends Component {
 		}
 
 		if (MobileContainer.deviceHeight === 0 && window.innerHeight) {
-			MobileContainer.deviceHeight = window.innerHeight - this.getPanelHeight()
+			MobileContainer.deviceHeight = window.innerHeight
 		}
-
-		if (MobileContainer.deviceWidth < 10) {
-			this.recheckDimensions()
-		}
+		this.recheckDimensions()
 
 		if ('onorientationchange' in window) {
 			window.addEventListener("orientationchange", () => {
-				MobileContainer.deviceHeight = window.innerWidth - this.getPanelHeight()
+				this.androidRecheckWidthBlocked = true
+				MobileContainer.deviceHeight = window.innerWidth
 				MobileContainer.deviceWidth = window.innerHeight
 				this.setState({time: Date.now()})
 			}, false)
 		}
 	}
 
-	recheckDimensions() {
-		if (MobileContainer.deviceWidth < 10) {
-			setTimeout(() => {
+	componentDidMount() {
+		this.setHeaderHeight()
+	}
+
+	componentDidUpdate() {
+		this.setHeaderHeight()
+		if (osName !== IOS && this.state.loadedDimensionsChecked && window.innerHeight !== MobileContainer.deviceHeight) {
+			if (this.androidRecheckWidthBlocked) {
+				this.androidRecheckWidthBlocked = false
+				return
+			}
+			this.recheckDimensions(true)
+		}
+	}
+
+	setHeaderHeight() {
+		let header = document.querySelector('.View__header')
+		if (!header) {
+			return
+		}
+		if (!this.state.headerHeight || (header.offsetHeight !== this.state.headerHeight)) {
+			this.setState({headerHeight: header.offsetHeight})
+		}
+	}
+
+	getHeaderHeight() {
+		return this.state.headerHeight
+	}
+
+	recheckDimensions(force = false) {
+		if (this.needRecheckDimensions() || force) {
+			let onReCheck = () => {
 				try {
-					MobileContainer.deviceHeight = window.innerHeight - this.getPanelHeight()
+					MobileContainer.deviceHeight = window.innerHeight
 					MobileContainer.deviceWidth = document.documentElement.offsetWidth
 				} catch (e) {
 					MobileContainer.deviceWidth = window.innerWidth
 				}
 				this.setState({time: Date.now()})
 				this.recheckDimensions()
-			}, 100)
+			}
+			if (force) {
+				onReCheck()
+			} else {
+				setTimeout(() => onReCheck(), 100)
+			}
+		} else {
+			this.setState({loadedDimensionsChecked: true})
 		}
-	}
-
-	getPanelHeight() {
-		return osName === IOS ? 44 : 56
 	}
 
 	goBack() {
@@ -87,7 +130,7 @@ class MobileContainer extends Component {
 		if (!route.isPopup()) {
 			return false
 		}
-		switch (route.pageId) {
+		switch (route.getPopupId()) {
 			case PAGE_POPUP:
 				return <BottomPopup onClick={() => this.goBack()} showCross={true} onClose={() => this.goBack()}>
 					<div style={{background: '#FFF', minHeight: 200, padding: 16, borderRadius: '14px 14px 0 0'}}>
@@ -117,7 +160,7 @@ class MobileContainer extends Component {
 	render() {
 		let {fatal, location} = this.props
 		if (fatal) {
-			return <Error error={this.props.fatal} onClose={() => this.props.removeFatalError()}/>
+			return <ErrorMobile error={this.props.fatal} onClose={() => this.props.removeFatalError()}/>
 		}
 		if (!isDeviceSupported()) {
 			return this.renderDeviceNotSupportedScreen()
