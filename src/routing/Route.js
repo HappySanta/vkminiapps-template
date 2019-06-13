@@ -92,7 +92,10 @@ export class Route {
 	}
 
 	isPopup() {
-		return this.structure.isPopup
+		if (this.structure) {
+			return this.structure.isPopup
+		}
+		return false
 	}
 
 	getParams() {
