@@ -7,9 +7,15 @@ import Icon24Back from "@vkontakte/icons/dist/24/back"
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
 import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from "@vkontakte/vkui"
+import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack';
+import PanelHeaderClose from '@vkontakte/vkui/dist/components/PanelHeaderClose/PanelHeaderClose';
 import "@vkontakte/vkui/dist/vkui.css"
 import {Route} from "../../routing/Route"
-import {PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_MAIN} from "../../routing/routes"
+import {
+	PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_MAIN,
+	VIEW_2, PANEL_2_1, PAGE_2_1, PANEL_2_2, PAGE_2_2,
+	VIEW_3, PANEL_3_1, PAGE_3_1, PANEL_3_2, PAGE_3_2
+} from "../../routing/routes"
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
 import {popPage, pushPage} from "../../index"
 import {isDevEnv, isDeviceSupported} from "../../tools/helpers"
@@ -116,6 +122,18 @@ class MobileContainer extends Component {
 		return route.isPopup() ? [] : viewHistory[viewId]
 	}
 
+	getPanelIdInView(route, viewId) {
+		const viewHistory = this.props.viewHistory[viewId],
+			viewPanels = this.props.viewsPanels[viewId],
+			panelId = route.getPanelId();
+
+		return ~viewHistory.indexOf(panelId) ?
+			panelId :
+			viewHistory.length > 0 ?
+				viewHistory[viewHistory.length - 1] :
+				viewPanels[0]
+	}
+
 	renderBackPanelHeader(title, noShadow = false, modal = false) {
 		return <PanelHeader
 			noShadow={noShadow}
@@ -168,7 +186,7 @@ class MobileContainer extends Component {
 		let route = Route.fromLocation(location.pathname, location.state)
 		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
-				  activePanel={route.getPanelId()}
+				  activePanel={this.getPanelIdInView(route, VIEW_MAIN)}
 				  history={this.getViewHistory(route, VIEW_MAIN)}
 				  popout={this.renderPopup(route)}
 				  onSwipeBack={() => popPage()}>
@@ -180,6 +198,9 @@ class MobileContainer extends Component {
 						<Button onClick={() => pushPage(PAGE_ENTITY, {entityId: 0})}>
 							На страницу сущности
 						</Button>
+						<Button onClick={() => pushPage(PAGE_2_1)} style={{marginLeft: 10}}>
+							Open View 2
+						</Button>
 					</div>
 				</Panel>
 				<Panel id={PANEL_ENTITY}>
@@ -188,6 +209,57 @@ class MobileContainer extends Component {
 						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0})}>
 							Открыть попап
 						</Button>
+						<Button onClick={() => pushPage(PAGE_3_1)} style={{marginLeft: 10}}>
+							Open View 3
+						</Button>
+					</div>
+				</Panel>
+			</View>
+			<View id={VIEW_2}
+				  activePanel={this.getPanelIdInView(route, VIEW_2)}
+				  history={this.getViewHistory(route, VIEW_2)}
+				  popout={this.renderPopup(route)}
+				  onSwipeBack={() => popPage()}>
+				<Panel id={PANEL_2_1}>
+					<PanelHeader left={<PanelHeaderClose onClick={() => popPage()} />}>
+						Panel 1 in View 2
+					</PanelHeader>
+					<div style={{textAlign: 'center', paddingTop: 10}}>
+						<Button onClick={() => pushPage(PAGE_2_2)}>
+							Go to Panel 2 in View 2
+						</Button>
+					</div>
+				</Panel>
+				<Panel id={PANEL_2_2}>
+					<PanelHeader left={<PanelHeaderBack onClick={() => popPage()} />}>
+						Panel 2 in View 2
+					</PanelHeader>
+					<div style={{textAlign: 'center', paddingTop: 10}}>
+						Hello
+					</div>
+				</Panel>
+			</View>
+			<View id={VIEW_3}
+				  activePanel={this.getPanelIdInView(route, VIEW_3)}
+				  history={this.getViewHistory(route, VIEW_3)}
+				  popout={this.renderPopup(route)}
+				  onSwipeBack={() => popPage()}>
+				<Panel id={PANEL_3_1}>
+					<PanelHeader left={<PanelHeaderClose onClick={() => popPage()} />}>
+						Panel 1 in View 3
+					</PanelHeader>
+					<div style={{textAlign: 'center', paddingTop: 10}}>
+						<Button onClick={() => pushPage(PAGE_3_2)}>
+							Go to Panel 2 in View 3
+						</Button>
+					</div>
+				</Panel>
+				<Panel id={PANEL_3_2}>
+					<PanelHeader left={<PanelHeaderBack onClick={() => popPage()} />}>
+						Panel 2 in View 3
+					</PanelHeader>
+					<div style={{textAlign: 'center', paddingTop: 10}}>
+						Hello
 					</div>
 				</Panel>
 			</View>
@@ -199,6 +271,7 @@ function mapStateToProps(state) {
 	return {
 		fatal: state.FatalErrorModule,
 		viewHistory: state.LocationModule.viewHistory,
+		viewsPanels: state.LocationModule.viewsPanels,
 	}
 }
 

@@ -22,8 +22,29 @@ function getInitialViewHistory() {
 	return viewHistory
 }
 
+function getInitialViewsPanels() {
+	let viewsPanels = {};
+
+	Object.keys(routes).forEach(pageId => {
+		let viewId = routes[pageId].viewId,
+			panelId = routes[pageId].panelId;
+
+		if (viewId) {
+			if (!viewsPanels.hasOwnProperty(viewId)) {
+				viewsPanels[viewId] = []
+			}
+			if (panelId && !~viewsPanels[viewId].indexOf(panelId)) {
+				viewsPanels[viewId] = [...viewsPanels[viewId], routes[pageId].panelId]
+			}
+		}
+	});
+
+	return viewsPanels
+}
+
 const initState = {
 	viewHistory: getInitialViewHistory(),
+	viewsPanels: getInitialViewsPanels(),
 	currentViewId: null,
 }
 

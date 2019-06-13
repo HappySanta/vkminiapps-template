@@ -13,7 +13,7 @@ import MobileContainer from "./containers/MobileContainer/MobileContainer"
 import L from "./lang/L"
 import "./style/index.css"
 import ErrorMobile from "./components/ErrorMobile/ErrorMobile"
-import registerServiceWorker from "./registerServiceWorker"
+// import registerServiceWorker from "./registerServiceWorker"
 import {ConfigProvider} from "@vkontakte/vkui"
 import {Router, Route, generatePath} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
@@ -83,4 +83,4 @@ L.init(startParams.getLangCode()).then(() => {
 	mount(<ErrorMobile error={e}/>)
 })
 
-registerServiceWorker()
+// registerServiceWorker()
