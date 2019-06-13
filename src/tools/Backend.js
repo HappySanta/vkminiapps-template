@@ -110,7 +110,7 @@ export default class Backend {
                 if (value === undefined) {
                     continue
                 }
-                if (typeof value.forEach === 'function') {
+                if (value && typeof value.forEach === 'function') {
                     value.forEach(i => arr.push({k: (prefix ? prefix + '[' + key + ']' : key) + '[]', v: i}))
                 } else if (typeof value === 'object') {
                     let resolve = Backend.stringify(value, true, (prefix ? prefix + '[' + key + ']' : key))
