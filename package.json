@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js",
+    "build": "GENERATE_SOURCEMAP=false npm-run-all build-css build-js",
     "make:component": "node src/tools/cli/make-component.js",
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
