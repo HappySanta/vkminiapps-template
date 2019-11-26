@@ -6,10 +6,9 @@ import ErrorMobile from "../../components/ErrorMobile/ErrorMobile"
 import Icon24Back from "@vkontakte/icons/dist/24/back"
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back"
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
-import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button} from "@vkontakte/vkui"
+import {Root, View, Panel, PanelHeader, HeaderButton, platform, IOS, Button, Group} from "@vkontakte/vkui"
 import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack';
 import PanelHeaderClose from '@vkontakte/vkui/dist/components/PanelHeaderClose/PanelHeaderClose';
-import "@vkontakte/vkui/dist/vkui.css"
 import {Route} from "../../routing/Route"
 import {
 	PAGE_ENTITY, PAGE_POPUP, PANEL_ENTITY, PANEL_MAIN, VIEW_MAIN,
@@ -19,6 +18,9 @@ import {
 import BottomPopup from "../../components/BottomPopup/BottomPopup"
 import {popPage, pushPage} from "../../index"
 import {isDevEnv, isDeviceSupported} from "../../tools/helpers"
+import Div from "@vkontakte/vkui/dist/components/Div/Div"
+import CellButton from "@vkontakte/vkui/dist/components/CellButton/CellButton"
+import "@vkontakte/vkui/dist/vkui.css"
 
 const osName = platform()
 
@@ -152,7 +154,7 @@ class MobileContainer extends Component {
 			case PAGE_POPUP:
 				return <BottomPopup onClick={() => this.goBack()} showCross={true} onClose={() => this.goBack()}>
 					<div style={{background: '#FFF', minHeight: 200, padding: 16, borderRadius: '14px 14px 0 0'}}>
-						Попап
+						Попап entityId: {route.params.entityId}
 					</div>
 				</BottomPopup>
 			default:
@@ -183,7 +185,7 @@ class MobileContainer extends Component {
 		if (!isDeviceSupported()) {
 			return this.renderDeviceNotSupportedScreen()
 		}
-		let route = Route.fromLocation(location.pathname, location.state)
+		let route = Route.fromLocation(location.pathname, location.state, location.search)
 		return <Root activeView={route.getViewId()}>
 			<View id={VIEW_MAIN}
 				  activePanel={this.getPanelIdInView(route, VIEW_MAIN)}
@@ -194,25 +196,41 @@ class MobileContainer extends Component {
 					<PanelHeader>
 						Главная страница
 					</PanelHeader>
-					<div style={{textAlign: 'center', paddingTop: 10}}>
-						<Button onClick={() => pushPage(PAGE_ENTITY, {entityId: 0})}>
+					<Group>
+						<Div>
+							Ну приветик!
+						</Div>
+					</Group>
+					<Group>
+						<CellButton onClick={() => pushPage(PAGE_ENTITY, {entityId: 242})}>
 							На страницу сущности
-						</Button>
-						<Button onClick={() => pushPage(PAGE_2_1)} style={{marginLeft: 10}}>
+						</CellButton>
+						<CellButton onClick={() => pushPage(PAGE_ENTITY, {entityId: 254}, "search=12")}>
+							На страницу сущности + search
+						</CellButton>
+						<CellButton onClick={() => pushPage(PAGE_2_1)}>
 							Open View 2
-						</Button>
-					</div>
+						</CellButton>
+					</Group>
 				</Panel>
 				<Panel id={PANEL_ENTITY}>
 					{this.renderBackPanelHeader('Сущность')}
-					<div style={{textAlign: 'center', paddingTop: 10}}>
-						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0})}>
+					<Group>
+						<Div>
+							Вы открыли карточку #{route.params.entityId}
+							<br/>
+							<br/>
+							Значение search: {route.search}
+						</Div>
+					</Group>
+					<Group>
+						<CellButton onClick={() => pushPage(PAGE_POPUP, {entityId: 12})}>
 							Открыть попап
-						</Button>
-						<Button onClick={() => pushPage(PAGE_3_1)} style={{marginLeft: 10}}>
+						</CellButton>
+						<CellButton onClick={() => pushPage(PAGE_3_1)}>
 							Open View 3
-						</Button>
-					</div>
+						</CellButton>
+					</Group>
 				</Panel>
 			</View>
 			<View id={VIEW_2}

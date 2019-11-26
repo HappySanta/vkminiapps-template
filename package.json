@@ -25,6 +25,7 @@
     "@happysanta/vk-app-ui": "^0.1.25",
     "@happysanta/vk-apps-sdk": "^1.0.8",
     "@vkontakte/icons": "^1.4.3",
+    "@vkontakte/vk-connect": "^1.6.10",
     "@vkontakte/vkui": "^2.21.4",
     "core-js": "^3.1.2",
     "history": "^4.9.0",

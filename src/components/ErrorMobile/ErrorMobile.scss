@@ -3,11 +3,7 @@
 	position: relative;
 	background: #FFFFFF;
 	@supports(--css: variables) {
-		background: var(--popup-background);
-	}
-
-	&__details {
-
+		background: var(--background_content);
 	}
 
 	&__body {
@@ -55,7 +51,7 @@
 		$borderRadius: 14px;
 		background: #FFFFFF;
 		@supports(--css: variables) {
-			background: var(--popup-background);
+			background: var(--background_content);
 		}
 		padding: 16px;
 		border-radius: $borderRadius $borderRadius 0 0;

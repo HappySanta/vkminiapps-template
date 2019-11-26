@@ -13,9 +13,11 @@ export class Route {
 	params
 	popupId
 
-	static fromLocation(location, state) {
+	static fromLocation(location, state, search) {
 		let route = new Route()
 		route.location = location
+		route.search = search
+		route.params = {}
 		let match = null
 		Object.keys(routes).some(pageId => {
 			match = matchPath(location, pageId)
@@ -50,12 +52,13 @@ export class Route {
 		return route
 	}
 
-	static fromPageId(pageId, params) {
+	static fromPageId(pageId, params, search) {
 		let route = new Route()
 		route.location = generatePath(pageId, params)
 		route.pageId = pageId
 		route.structure = routes[pageId]
 		route.params = params
+		route.search = search
 		return route
 	}
 

@@ -64,7 +64,7 @@ class DesktopContainer extends Component {
 		if (fatal) {
 			return <ErrorDesktop error={fatal} onClose={() => this.props.removeFatalError()}/>
 		}
-		let route = Route.fromLocation(location.pathname, location.state)
+		let route = Route.fromLocation(location.pathname, location.state, location.search)
 		return <div>
 			{this.renderPage(route)}
 			{this.renderPopup(route)}
