@@ -1,8 +1,8 @@
 export class PageStructure {
 
-	isPopup
+	isModal
 
-	constructor(isPopup = false) {
-		this.isPopup = isPopup
+	constructor(isModal = false) {
+		this.isModal = isModal
 	}
 }

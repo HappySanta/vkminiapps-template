@@ -28,27 +28,7 @@ export class Route {
 		}
 		route.params = match.params
 		route.pageId = match.path
-		if (routes[route.pageId].isPopup && state && state.previousRoute) {
-			if (routes[route.pageId] instanceof PageStructureVkUi) {
-				route.structure = new PageStructureVkUi(
-					state.previousRoute.getPanelId(),
-					state.previousRoute.getViewId(),
-					state.previousRoute.getRootId(),
-					true,
-				)
-				route.popupId = match.path
-				route.pageId = state.previousRoute.pageId
-			} else {
-				route.pageId = state.previousRoute.pageId
-				route.popupId = match.path
-				route.structure = routes[match.path]
-			}
-		} else {
-			route.structure = routes[route.pageId]
-			if (route.isPopup()) {
-				route.popupId = match.path
-			}
-		}
+		route.structure = routes[route.pageId]
 		return route
 	}
 
@@ -94,11 +74,8 @@ export class Route {
 		return ROOT_MAIN
 	}
 
-	isPopup() {
-		if (this.structure) {
-			return this.structure.isPopup
-		}
-		return false
+	isModal() {
+		return this.getActiveModal() !== null
 	}
 
 	getParams() {
@@ -107,5 +84,15 @@ export class Route {
 
 	getPopupId() {
 		return this.popupId
+	}
+
+	getActiveModal() {
+		if (this.search) {
+			const modal = this.search.toString().match('w=([A-z0-9_-]+)')
+			if (modal) {
+				return modal[1]
+			}
+		}
+		return null
 	}
 }

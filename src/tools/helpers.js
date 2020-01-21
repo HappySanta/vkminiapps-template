@@ -116,3 +116,12 @@ export function scrollDesktopToPopupHeader(speed = DEFAULT_SCROLL_SPEED) {
 	let scrollPosition = rect.top
 	VkSdk.scroll(scrollPosition, speed).then().catch()
 }
+
+/**
+ * @param timer
+ * @param args
+ * @return {Promise<any>}
+ */
+export function delay(timer, args = []) {
+	return new Promise(resolve => setTimeout(resolve, timer, args))
+}

@@ -5,17 +5,21 @@ import "./ScreenSpinner.css"
 export default class ScreenSpinner extends Component {
 
 	render() {
-		let {height, desktop} = this.props
-		let style = {}
-		if (height) {
-			style.minHeight = height
-		} else if (!desktop) {
+		const {minHeight, desktop, background, withHeader} = this.props
+		const style = {}
+		if (minHeight) {
+			style.minHeight = minHeight
+		} else if (!desktop && !withHeader) {
 			style.minHeight = '100vh'
 		}
-		if (desktop) {
-			style.background = '#FFF'
+		if (background) {
+			style.background = background
 		}
-		return <div className="ScreenSpinner" style={style}>
+		const classList = ['ScreenSpinner']
+		if (withHeader) {
+			classList.push('ScreenSpinner--with-header')
+		}
+		return <div className={classList.join(' ')} style={style}>
 			<div className="ScreenSpinner__inner">
 				<VkSpinner size="large"/>
 			</div>

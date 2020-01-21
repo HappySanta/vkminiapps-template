@@ -3,8 +3,8 @@ import {connect} from "react-redux"
 import {removeFatalError} from "../../modules/FatalErrorModule"
 import ErrorDesktop from "../../components/ErrorDesktop/ErrorDesktop"
 import {Route} from "../../routing/Route"
-import {PAGE_ENTITY, PAGE_MAIN, PAGE_POPUP} from "../../routing/routes"
-import {popPage, pushPage} from "../../index"
+import {PAGE_ENTITY, PAGE_MAIN, MODAL_MAIN} from "../../routing/routes"
+import {popPage, pushModal, pushPage} from "../../routing/methods"
 import {Button} from "@happysanta/vk-app-ui"
 import PopupDesktop from "../../components/PopupDesktop/PopupDesktop"
 import '@happysanta/vk-app-ui/dist/vkappui.css'
@@ -19,11 +19,8 @@ class DesktopContainer extends Component {
 	}
 
 	renderPopup(route) {
-		if (!route.isPopup()) {
-			return null
-		}
-		switch (route.getPopupId()) {
-			case PAGE_POPUP:
+		switch (route.getActiveModal()) {
+			case MODAL_MAIN:
 				return <PopupDesktop showCross={true} onClick={() => this.goBack()} onClose={() => this.goBack()}>
 					<div style={{background: '#FFF', minHeight: 200, padding: 16}}>
 						Попап
@@ -49,7 +46,7 @@ class DesktopContainer extends Component {
 				return <div>
 					Сущность
 					<div style={{textAlign: 'center', paddingTop: 10}}>
-						<Button onClick={() => pushPage(PAGE_POPUP, {entityId: 0})}>
+						<Button onClick={() => pushModal(MODAL_MAIN)}>
 							Открыть попап
 						</Button>
 					</div>

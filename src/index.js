@@ -13,63 +13,29 @@ import MobileContainer from "./containers/MobileContainer/MobileContainer"
 import L from "./lang/L"
 import ErrorMobile from "./components/ErrorMobile/ErrorMobile"
 import {ConfigProvider} from "@vkontakte/vkui"
-import {generatePath, Route, Router} from "react-router-dom"
+import {Route, Router} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
-import {isDevEnv} from "./tools/helpers"
-import {Route as MyRoute} from "./routing/Route"
+import {delay, isDevEnv} from "./tools/helpers"
 import DesktopContainer from "./containers/DesktopContainer/DesktopContainer"
 import "./style/index.css"
 
-export function pushPage(pageId, params = {}, search = '') {
-	let nextRoute = MyRoute.fromPageId(pageId, params, search)
-	let currentRoute = MyRoute.fromLocation(history.location.pathname, history.location.state, history.location.search)
-	if (nextRoute.isPopup()) {
-		if (currentRoute.isPopup() && !VkSdk.getStartParams().isMobile()) {
-			replacePage(pageId, params)
-			return
-		}
-		params = {...params, previousRoute: currentRoute}
-	}
-	history.push({
-		pathname: nextRoute.getLocation(),
-		state: params,
-		search: search,
-	})
-}
-
-export function popPage() {
-	history.goBack()
-}
-
-export function replacePage(pageId, params = {}, search = '') {
-	let nextRoute = MyRoute.fromPageId(pageId, params, search)
-	if (nextRoute.isPopup()) {
-		let previousRoute = MyRoute.fromLocation(history.location.pathname, history.location.state, history.location.search)
-		if (params.pageId) {
-			previousRoute.pageId = params.pageId
-			delete params.pageId
-		}
-		params = {...params, previousRoute: previousRoute}
-	}
-	history.replace({
-		pathname: generatePath(pageId, params),
-		state: params,
-		search: search,
-	})
-}
-
 VkSdk.init()
-/**
- * @type {VkStartParams}
- */
 let startParams = VkSdk.getStartParams()
 window._hsMobileUI = startParams.isMobile()
 L.init(startParams.getLangCode())
+	.then(async () => {
+		//Если window.innerHeight будет 0 то у нас все сломается
+		//ждем пока тут будет норм высота
+		let i = 0
+		while (window.innerHeight <= 0 && i++ < 100) {
+			await delay(50)
+		}
+	})
 	.then(() => {
 		history.listen((location, action) => {
-			store.dispatch(handleLocation(location.pathname, action, location.state))
+			store.dispatch(handleLocation(location, action, false))
 		})
-		store.dispatch(handleLocation(history.location.pathname, HISTORY_ACTION_PUSH, history.location.state, true))
+		store.dispatch(handleLocation(history.location, HISTORY_ACTION_PUSH, true))
 		mount(<Provider store={store}>
 			<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
 				<Router history={history}>

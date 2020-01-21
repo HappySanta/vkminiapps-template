@@ -15,25 +15,3 @@ body {
 	-webkit-tap-highlight-color: transparent;
 }
 
-.plak-wrapper {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 100%;
-}
-
-.plak {
-	background: url("./img/plak.png") no-repeat center center/cover;
-	width: 72px;
-	height: 72px;
-	margin: auto;
-}
-
-.plak-text {
-	margin-top: 16px;
-	font-size: 16px;
-	color: #71757A;
-	text-align: center;
-	line-height: 20px;
-}
-

@@ -12,6 +12,6 @@ export class PageStructureVkUi extends PageStructure {
 		this.panelId = panelId
 		this.viewId = viewId
 		this.rootId = rootId
-		this.isPopup = popup
+		this.isModal = popup
 	}
 }

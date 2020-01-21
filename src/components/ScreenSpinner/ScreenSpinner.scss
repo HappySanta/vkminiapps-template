@@ -5,10 +5,35 @@
 	}
 	position: relative;
 
+	&--withHeader {
+		//root['ios']
+	}
+	//min-height: 100vh - var(--panel_he);
+
 	&__inner {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+}
+
+.ScreenSpinner--with-header {
+	min-height: calc(100vh - 44px);
+}
+
+.Root--android {
+	.ScreenSpinner--with-header {
+		@supports(--css: variables) {
+			min-height: calc(100vh - var(--panelheader_height_android));
+		}
+	}
+}
+
+.Root--ios {
+	.ScreenSpinner--with-header {
+		@supports(--css: variables) {
+			min-height: calc(100vh - var(--panelheader_height_ios));
+		}
 	}
 }
