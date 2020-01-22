@@ -1,0 +1,26 @@
+.ModalFatalError {
+
+	&__wrapper {
+		padding: 0 16px 16px;
+		font-size: 15px;
+		line-height: 20px;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	&__header {
+		font-weight: 600;
+		font-size: 17px;
+		color: #222222 !important;
+		@supports(--css: variables) {
+			color: var(--text_primary) !important;
+		}
+		line-height: 21px;
+	}
+}
+
+.Root--android  {
+	.ModalFatalError__header-title {
+		padding-left: 8px;
+	}
+}

@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 import {getOnErrorClose, removeFatalError} from "../../modules/FatalErrorModule"
-import ErrorMobile from "../../components/ErrorMobile/ErrorMobile"
+import FatalErrorMobile from "../../components/FatalErrorMobile/FatalErrorMobile"
 import {
 	Root,
 	View,
@@ -64,7 +64,7 @@ class MobileContainer extends Component {
 	render() {
 		const {fatal, location} = this.props
 		if (fatal) {
-			return <ErrorMobile error={fatal} onClose={getOnErrorClose(fatal, () => this.props.removeFatalError())}/>
+			return <FatalErrorMobile error={fatal} onClose={getOnErrorClose(fatal, () => this.props.removeFatalError())}/>
 		}
 		const route = Route.fromLocation(location.pathname, location.state, location.search)
 		return <Root activeView={route.getViewId()}>

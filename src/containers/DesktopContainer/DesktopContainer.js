@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
-import {removeFatalError} from "../../modules/FatalErrorModule"
-import ErrorDesktop from "../../components/ErrorDesktop/ErrorDesktop"
+import {getOnErrorClose, removeFatalError} from "../../modules/FatalErrorModule"
+import FatalErrorDesktop from "../../components/FatalErrorDesktop/FatalErrorDesktop"
 import {Route} from "../../routing/Route"
 import {PAGE_ENTITY, PAGE_MAIN, MODAL_MAIN} from "../../routing/routes"
 import {popPage, pushModal, pushPage} from "../../routing/methods"
@@ -59,7 +59,7 @@ class DesktopContainer extends Component {
 	render() {
 		let {fatal, location} = this.props
 		if (fatal) {
-			return <ErrorDesktop error={fatal} onClose={() => this.props.removeFatalError()}/>
+			return <FatalErrorDesktop error={fatal} onClose={getOnErrorClose(fatal, () => this.props.removeFatalError())}/>
 		}
 		let route = Route.fromLocation(location.pathname, location.state, location.search)
 		return <div>
@@ -72,7 +72,7 @@ class DesktopContainer extends Component {
 
 function mapStateToProps(state) {
 	return {
-
+		fatal: state.FatalErrorModule,
 	}
 }
 

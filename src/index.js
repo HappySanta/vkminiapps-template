@@ -11,13 +11,14 @@ import history from "./routing/history"
 import {Provider} from "react-redux"
 import MobileContainer from "./containers/MobileContainer/MobileContainer"
 import L from "./lang/L"
-import ErrorMobile from "./components/ErrorMobile/ErrorMobile"
+import FatalErrorMobile from "./components/FatalErrorMobile/FatalErrorMobile"
 import {ConfigProvider} from "@vkontakte/vkui"
 import {Route, Router} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
 import {delay, isDevEnv} from "./tools/helpers"
 import DesktopContainer from "./containers/DesktopContainer/DesktopContainer"
 import "./style/index.css"
+import FatalErrorDesktop from "./components/FatalErrorDesktop/FatalErrorDesktop"
 
 VkSdk.init()
 let startParams = VkSdk.getStartParams()
@@ -37,7 +38,7 @@ L.init(startParams.getLangCode())
 		})
 		store.dispatch(handleLocation(history.location, HISTORY_ACTION_PUSH, true))
 		mount(<Provider store={store}>
-			<ConfigProvider isWebView={isDevEnv() ? true : undefined}>
+			<ConfigProvider webviewType="vkapps" isWebView={isDevEnv() ? true : undefined}>
 				<Router history={history}>
 					<Route component={(props) =>
 						startParams.isMobile() ? <MobileContainer {...props}/> : <DesktopContainer {...props}/>
@@ -48,6 +49,6 @@ L.init(startParams.getLangCode())
 	})
 	.catch(e => {
 		mount(<Provider store={store}>
-			<ErrorMobile error={e}/>
+			{VkSdk.getStartParams().isMobile() ? <FatalErrorMobile error={e}/> : <FatalErrorDesktop error={e}/>}
 		</Provider>)
 	})
