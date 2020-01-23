@@ -65,6 +65,7 @@ const initState = {
 	viewHistory: getInitialViewHistory(),
 	viewsPanels: getInitialViewsPanels(),
 	currentViewId: null,
+	homePage: null,
 }
 
 const LocationModule = (state = initState, action) => {
@@ -95,6 +96,10 @@ const LocationModule = (state = initState, action) => {
 
 function setLocationModule(update) {
 	return {type: SET_LOCATION_MODULE, update}
+}
+
+function setHomePage(homePage) {
+	return setLocationModule({homePage})
 }
 
 function setCurrentViewId(currentViewId) {
@@ -198,9 +203,8 @@ function replaceViewHistory(currentViewId, nextViewId, nextPaneId) {
 export function handleLocation(location, action, isInitial = false) {
 	return (dispatch) => {
 		let route = Route.fromLocation(location.pathname)
-		if (isInitial && route.isModal()) {
-			replacePage(PAGE_MAIN)
-			return
+		if (isInitial) {
+			dispatch(setHomePage(PAGE_MAIN))
 		}
 		dispatch(setViewHistory(route, action))
 		const handlePageData = (pageId) => {
