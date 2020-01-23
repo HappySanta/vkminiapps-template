@@ -1,7 +1,6 @@
 import {Route} from "../routing/Route"
 import routes, {PAGE_MAIN} from "../routing/routes"
 import {PageStructureVkUi} from "../routing/PageStructureVkUi"
-import {replacePage} from "../routing/methods"
 
 const SET_LOCATION_MODULE = "LocationModule.SET_LOCATION_MODULE"
 const PUSH_VIEW_HISTORY = "LocationModule.PUSH_VIEW_HISTORY"
