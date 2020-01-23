@@ -1,6 +1,4 @@
 import {PageStructureVkUi} from "./PageStructureVkUi"
-import VkSdk from "@happysanta/vk-apps-sdk"
-import {PageStructure} from "./PageStructure"
 
 export const ROOT_MAIN = 'root_main'
 export const ROOT_FATAL_ERROR = 'root_fatal_error'
@@ -41,10 +39,6 @@ let routes =  {
 
 	[PAGE_3_1]: new PageStructureVkUi(PANEL_3_1, VIEW_3),
 	[PAGE_3_2]: new PageStructureVkUi(PANEL_3_2, VIEW_3),
-}
-
-if (!VkSdk.getStartParams().isMobile()) {
-	routes[MODAL_MAIN] = new PageStructure(true)
 }
 
 export default routes
