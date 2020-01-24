@@ -15,12 +15,13 @@ import FatalErrorMobile from "./components/FatalErrorMobile/FatalErrorMobile"
 import {ConfigProvider} from "@vkontakte/vkui"
 import {Route, Router} from "react-router-dom"
 import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule"
-import {delay, isDevEnv} from "./tools/helpers"
+import {delay, isDevEnv, preventBlinkingBecauseOfScroll} from "./tools/helpers"
 import DesktopContainer from "./containers/DesktopContainer/DesktopContainer"
 import "./style/index.css"
 import FatalErrorDesktop from "./components/FatalErrorDesktop/FatalErrorDesktop"
 
 VkSdk.init()
+preventBlinkingBecauseOfScroll()
 let startParams = VkSdk.getStartParams()
 window._hsMobileUI = startParams.isMobile()
 L.init(startParams.getLangCode())

@@ -2,7 +2,7 @@ import {Route as MyRoute} from "./Route"
 import history from "./history"
 import VkSdk from "@happysanta/vk-apps-sdk"
 import {generatePath} from "react-router-dom"
-import {devLog} from "../tools/helpers"
+import {devLog, preventBlinkingBecauseOfScroll} from "../tools/helpers"
 import {getLastRoute} from "../modules/LocationModule"
 
 const AMIN_TIME = 500
@@ -61,6 +61,7 @@ export function pushPage(pageId, params = {}, search = '') {
 		}
 		params = {...params, previousRoute: currentRoute}
 	}
+	preventBlinkingBecauseOfScroll()
 	history.push({
 		pathname: nextRoute.getLocation(),
 		state: params,
@@ -72,6 +73,7 @@ export function pushModal(modalId) {
 	if (isLock()) {
 		return push(pushModal, modalId)
 	}
+	preventBlinkingBecauseOfScroll()
 	devLog("pushModal " + modalId)
 	let currentRoute = MyRoute.fromLocation(history.location.pathname, history.location.state, history.location.search)
 	currentRoute.search = 'w=' + modalId
@@ -86,6 +88,7 @@ export function replaceModal(modalId) {
 	if (isLock()) {
 		return push(replaceModal, modalId)
 	}
+	preventBlinkingBecauseOfScroll()
 	devLog("replaceModal " + modalId)
 	let currentRoute = MyRoute.fromLocation(history.location.pathname, history.location.state, history.location.search)
 	currentRoute.search = 'w=' + modalId
@@ -100,6 +103,7 @@ export function popPage() {
 	if (isLock()) {
 		return push(popPage, 1, 2)
 	}
+	preventBlinkingBecauseOfScroll()
 	if (VkSdk.getStartParams().isMobile()) {
 		devLog("popPage")
 		history.goBack()
