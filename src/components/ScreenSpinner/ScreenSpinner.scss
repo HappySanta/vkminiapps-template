@@ -19,16 +19,30 @@
 
 .Root--android {
 	.ScreenSpinner--with-header {
-		@supports(--css: variables) {
+		@supports (--css: variables) {
 			min-height: calc(100vh - var(--panelheader_height_android));
+
+			@supports (min-height: constant(safe-area-inset-top)) {
+				min-height: calc(100vh - (var(--panelheader_height_android) + constant(safe-area-inset-top) + constant(safe-area-inset-bottom)));
+			}
+			@supports (min-height: env(safe-area-inset-top)) {
+				min-height: calc(100vh - (var(--panelheader_height_android) + env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+			}
 		}
 	}
 }
 
 .Root--ios {
 	.ScreenSpinner--with-header {
-		@supports(--css: variables) {
+		@supports (--css: variables) {
 			min-height: calc(100vh - var(--panelheader_height_ios));
+
+			@supports (min-height: constant(safe-area-inset-top)) {
+				min-height: calc(100vh - (var(--panelheader_height_ios) + constant(safe-area-inset-top) + constant(safe-area-inset-bottom)));
+			}
+			@supports (min-height: env(safe-area-inset-top)) {
+				min-height: calc(100vh - (var(--panelheader_height_ios) + env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+			}
 		}
 	}
 }
