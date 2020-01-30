@@ -125,10 +125,3 @@ export function scrollDesktopToPopupHeader(speed = DEFAULT_SCROLL_SPEED) {
 export function delay(timer, args = []) {
 	return new Promise(resolve => setTimeout(resolve, timer, args))
 }
-
-export function preventBlinkingBecauseOfScroll() {
-	let startParams = VkSdk.getStartParams()
-	if ('scrollRestoration' in window.history && window.history.scrollRestoration === 'auto' && startParams.isMobile()) {
-		window.history.scrollRestoration = 'manual'
-	}
-}
