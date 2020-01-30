@@ -199,6 +199,12 @@ function replaceViewHistory(currentViewId, nextViewId, nextPaneId) {
 	}
 }
 
+/**
+ * @param location
+ * @param action
+ * @param isInitial
+ * @return Object {type: ...}
+ */
 export function handleLocation(location, action, isInitial = false) {
 	return (dispatch) => {
 		let route = Route.fromLocation(location.pathname)
