@@ -162,9 +162,6 @@ function pushViewHistory(route) {
 		let panelId = route.getPanelId()
 		let viewId = route.getViewId()
 		let history = viewHistory[viewId]
-		if (route.isModal()) {
-			return
-		}
 		panelId = getHandledRepeatsPanelId(history, panelId, true)
 		dispatch({type: PUSH_VIEW_HISTORY, viewId, panelId})
 	}
