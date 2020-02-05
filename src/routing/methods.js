@@ -5,7 +5,7 @@ import {generatePath} from "react-router-dom"
 import {devLog} from "../tools/helpers"
 import {getLastRoute} from "../modules/LocationModule"
 
-const AMIN_TIME = 500
+const ANIM_TIME = 500
 
 let list = []
 
@@ -27,7 +27,7 @@ let timer = null
 
 function reset() {
 	clearTimeout(timer)
-	timer = setTimeout(pop, AMIN_TIME)
+	timer = setTimeout(pop, ANIM_TIME)
 }
 
 
@@ -39,7 +39,11 @@ function lock() {
 
 
 function isLock() {
-	if (Date.now() - time < (VkSdk.getStartParams().isMobile() ? AMIN_TIME : 10)) {
+	/*
+	 * Почему тут для десктопа задежка 10мс?
+	 * Потому что может быть случай когда два изменения history api могут перепутаться
+	 */
+	if (Date.now() - time < (VkSdk.getStartParams().isMobile() ? ANIM_TIME : 10)) {
 		return true
 	} else {
 		lock()
