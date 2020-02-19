@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import "./ModalFatalError.css"
-import {ModalPage, HeaderButton, ModalPageHeader, Div} from "@vkontakte/vkui"
+import {ModalPage, PanelHeaderButton, ModalPageHeader, Div} from "@vkontakte/vkui"
 import {getErrorHeader, getTextErrorDetails} from "../../modules/FatalErrorModule"
 import Icon24Dismiss from "@vkontakte/icons/dist/24/dismiss"
 
@@ -15,7 +15,7 @@ export default class ModalFatalError extends Component {
 							  left={<Div className="ModalFatalError__header">
 								  {getErrorHeader(error)}
 							  </Div>}
-							  right={<HeaderButton onClick={() => this.props.onClose()}><Icon24Dismiss/></HeaderButton>}
+							  right={<PanelHeaderButton onClick={() => this.props.onClose()}><Icon24Dismiss/></PanelHeaderButton>}
 						  >
 						  </ModalPageHeader>}
 						  onClose={() => this.props.onClose()}>
