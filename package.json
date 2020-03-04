@@ -8,6 +8,7 @@
 		"build-js": "react-scripts build",
 		"build": "GENERATE_SOURCEMAP=false npm-run-all build-css build-js",
 		"make:component": "node src/tools/cli/make-component.js",
+		"make:module": "node src/tools/cli/make-module.js",
 		"build-css": "node-sass-chokidar src/ -o src/",
 		"watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
 		"start-js": "cross-env react-scripts start",
