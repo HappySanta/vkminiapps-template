@@ -6,6 +6,10 @@ process.argv.forEach(function (val, index, array) {
 	}
 })
 
+if (moduleName.indexOf('Module') === -1) {
+	moduleName += "Module"
+}
+
 if (moduleName) {
 
 	let basePath = 'src/modules/' + moduleName + '.js'
@@ -13,11 +17,13 @@ if (moduleName) {
 
 	let fs = require('fs');
 	if (fs.existsSync(basePath)) {
-		console.error(`Directory ${basePath} already exists`)
+		console.error(`Module ${basePath} already exists`)
 		return
 	}
 
-	let moduleFile = `const UPDATE = '${moduleName}.UPDATE'
+	const snackCase = moduleName.replace(/(?:^|\.?)([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "").toUpperCase()
+
+	let moduleFile = `const SET_${snackCase} = '${moduleName}.SET_${snackCase}'
 
 const initState = {
     
@@ -25,15 +31,15 @@ const initState = {
 
 export default function ${moduleName}(state = initState, action) {
     switch (action.type) {
-		case UPDATE:
+		case SET_${snackCase}:
 			return {...state, ...action.update}
 		default:
 			return state
     }
 }
 
-function update(update) {
-	return {type: UPDATE, update}
+function set${moduleName}(update) {
+	return {type: SET_${snackCase}, update}
 }`
 
 
