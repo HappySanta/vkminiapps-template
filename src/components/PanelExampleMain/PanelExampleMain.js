@@ -16,7 +16,7 @@ class PanelExampleMain extends Component {
 			</PanelHeader>
 			<Group>
 				<Div>
-					Ну приветик!
+					Ну приветик! 2
 				</Div>
 			</Group>
 			<Group>
