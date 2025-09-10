@@ -21,7 +21,7 @@
 		"cross-env": "^6.0.3",
 		"http-proxy-middleware": "^0.20.0",
 		"react-hot-loader": "^4.12.18",
-		"react-scripts": "^3.4.0"
+		"react-scripts": "^5.0.1"
 	},
 	"dependencies": {
 		"@happysanta/vk-app-ui": "^0.2.0",
